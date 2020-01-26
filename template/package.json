@@ -4,8 +4,8 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "start": "node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --mode development",
-    "build": "node ./node_modules/webpack/bin/webpack.js --mode production",
+    "start": "node ./node_modules/webpack-dev-server/.bin/webpack-dev-server.js --mode development",
+    "build": "node ./node_modules/webpack/.bin/webpack.js --mode production",
     "docs": "node ./node_modules/.bin/svelte-doc-gnerator generate --library ./src/components --target ./site/library"
   },
   "author": "Ivan",
