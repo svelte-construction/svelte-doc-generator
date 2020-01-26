@@ -1,6 +1,7 @@
 # Svelte documentation generator tool
 Do you have a library of svelte components?
 You can generate a documentation for whole your library.
+
 ![example](./doc/example.png)
 
 ## Installation
