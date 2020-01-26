@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "svelte-doc-generator",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "",
   "scripts": {
     "check": "./node_modules/.bin/tsc --noEmit",
