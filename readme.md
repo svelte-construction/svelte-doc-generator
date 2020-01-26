@@ -50,14 +50,14 @@ Inside `./src/components/Input` folder you have to create `InputDocumentation.sv
 This will generate a library from your components.
 This tool will include only components with `*Documentation.svelte` files inside.
 ```bash
-node ./node_modules/.bin/svelte-doc-gnerator ./src/components --target ./site/library
+node ./node_modules/.bin/svelte-doc-gnerator generate --library ./src/components --target ./site/library
 ```
 
 **5. Run your documentation site**
 
 This command will start `webpack dev server` to serve your site.
 ```bash
-node ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --mode development
+node ./node_modules/webpack-dev-server/.bin/webpack-dev-server.js --mode development
 ```
 
 **6. Open localhost**
