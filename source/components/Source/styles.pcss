@@ -1,0 +1,47 @@
+.code {
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.numbers {
+  flex-grow: 0;
+  border-right: 1px solid $gray;
+}
+
+.number {
+  padding: 0 10px;
+  color: $dark-blue;
+}
+
+.lines {
+  flex-grow: 2;
+}
+
+.line {
+  padding: 0 5px;
+}
+
+.number,
+.line {
+  &:nth-child(even) {
+    &.active {
+      background-color: $yellow-disabled
+    }
+  }
+
+  &:nth-child(odd) {
+    background-color: rgba(0, 0, 0, 0.02);
+    &.active {
+      background-color: $yellow-disabled
+    }
+  }
+}
+
+.empty {
+  &:after {
+    display: inline-block;
+    content: ' ';
+  }
+}

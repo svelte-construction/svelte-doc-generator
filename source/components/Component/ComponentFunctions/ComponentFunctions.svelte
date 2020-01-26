@@ -1,0 +1,56 @@
+<script>
+  import { createEventDispatcher } from 'svelte';
+  import ComponentDefinitions from './../ComponentDefinitions'
+
+  const dispatch = createEventDispatcher();
+
+  export let data = {};
+
+  function onClickDefinition(e) {
+    e.preventDefault();
+    const line = parseInt(e.target.dataset.line, 10);
+    dispatch('source', { line });
+  }
+
+  $: mapped = Object.keys(data).map((name) => ({ name, ...data[name] }));
+  $: sorted = mapped.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
+</script>
+
+<style src="./styles.pcss">
+
+</style>
+
+<div class="component-functions">
+  <ComponentDefinitions title="Exported functions" visible={sorted.length}>
+    <div class="content">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Arguments</th>
+              <th scope="col">Description</th>
+              <th scope="col">Note</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {#each sorted as item}
+              <tr>
+                <td scope="row">
+                  <kbd>{item.name}</kbd>
+                  (<a href="#" on:click={onClickDefinition} data-line={item.location.start.line}>declaration</a>)
+                </td>
+                <td>
+                  {#each item.arguments as argument}
+                    <kbd>{argument.name}</kbd>&nbsp;
+                  {/each}
+                </td>
+                <td>{item.description || ''}</td>
+                <td>{item.note || ''}</td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
+  </ComponentDefinitions>
+</div>

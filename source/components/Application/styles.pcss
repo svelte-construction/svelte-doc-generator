@@ -1,0 +1,45 @@
+.menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  padding: 24px 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  width: 200px;
+  height: 100vh;
+  background-color: #eee;
+  overflow-y: scroll;
+
+  &__item {
+    display: block;
+  }
+
+  &__link {
+    display: block;
+    padding: 8px 24px 8px 34px;
+    text-decoration: none;
+    color: #333;
+    cursor: pointer;
+
+    &:focus,
+    &:hover {
+      background-color: rgba(51, 51, 51, 0.1);
+    }
+
+    &.active {
+      background-color: rgba(0, 0, 0, 0.42);
+      color: #fff;
+    }
+  }
+}
+
+.content {
+  position: absolute;
+  right: 0;
+  left: 200px;
+  padding: 30px 15px 0;
+  overflow: auto;
+  box-sizing: border-box;
+  height: 100vh;
+}

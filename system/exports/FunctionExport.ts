@@ -1,0 +1,107 @@
+import parse from 'comment-parser';
+import Base from '../base/Base';
+import { ExportNamedDeclaration, FunctionDeclaration, Identifier, Node } from 'estree';
+import BaseExport, { BaseExportSpace } from './BaseExport';
+import Description from '../models/Description';
+import { LocationSpace } from '../models/Location';
+
+export namespace FunctionExportSpace {
+  export type Config = {};
+
+  export type Result = {
+    arguments: Argument[];
+    description: string | false,
+    tags: parse.Tag[],
+    location: LocationSpace.Result
+  };
+
+  export type Argument = {
+    name: string;
+  };
+}
+
+export default class FunctionExport extends BaseExport<FunctionExportSpace.Config> {
+
+  public get declaration(): FunctionDeclaration {
+    return this.data.declaration as FunctionDeclaration;
+  }
+
+  public get name(): string {
+    return (this.declaration.id as Identifier).name;
+  }
+
+  public get jsdoc(): parse.Comment | false {
+    if (!this.data.leadingComments) {
+      return false;
+    }
+
+    // parse only block comments
+    const comment = this.data.leadingComments[0];
+    if (comment.type !== 'Block') {
+      return false;
+    }
+
+    // parse only jsdoc comments
+    // comment value should be like
+    // `*\n* Hello!\n* @returns {string}\n`
+    if (!comment.value.match(/^\*[^*]/)) {
+      return false;
+    }
+
+    // make jsdoc comment block
+    const raw = `/*${comment.value}*/`;
+    const parsed = parse(raw);
+    if (!parsed) {
+      return false;
+    }
+
+    return parsed[0];
+  }
+
+  public get description(): Description | false {
+    if (!this.jsdoc) {
+      if (!this.data.leadingComments) {
+        return false;
+      }
+
+      const data = this.data.leadingComments[0];
+      return new Description({ data });
+    }
+
+    const content = this.jsdoc.description;
+    const data = { type: 'Block', value: content };
+    return new Description({ data });
+  }
+
+  public get tags(): any {
+    if (!this.jsdoc) {
+      return [];
+    }
+
+    return this.jsdoc.tags;
+  }
+
+  public get arguments(): FunctionExportSpace.Argument[] {
+    const declaration = this.data.declaration as FunctionDeclaration;
+    if (!declaration.params) {
+      return [];
+    }
+
+    const args: FunctionExportSpace.Argument[] = [];
+    for (const param of declaration.params) {
+      const identifier = param as Identifier;
+      args.push({ name: identifier.name });
+    }
+
+    return args;
+  }
+
+  public get result(): FunctionExportSpace.Result {
+    return {
+      arguments: this.arguments,
+      description: this.description && this.description.markdown,
+      tags: this.tags,
+      location: this.location.result
+    };
+  }
+}
