@@ -8,7 +8,4 @@ export const DOCUMENTATION_PATH_SUFFIX = 'Documentation';
 export const DOCUMENTATION_PATH_EXTENSION = 'svelte';
 
 export const WATCH_DELAY = 1000;
-export const WATCH_TEMPLATES = [
-  `/**/*${DOCUMENTATION_PATH_SUFFIX}`,
-  `/**/*${DOCUMENTATION_PATH_SUFFIX}.${DOCUMENTATION_PATH_EXTENSION}`
-];
+export const WATCH_TEMPLATES = ['/**/*'];

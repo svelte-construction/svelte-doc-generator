@@ -17,7 +17,4 @@ exports.PATH_TEMPLATE = path.resolve(exports.PATH_ROOT, 'template');
 exports.DOCUMENTATION_PATH_SUFFIX = 'Documentation';
 exports.DOCUMENTATION_PATH_EXTENSION = 'svelte';
 exports.WATCH_DELAY = 1000;
-exports.WATCH_TEMPLATES = [
-    `/**/*${exports.DOCUMENTATION_PATH_SUFFIX}`,
-    `/**/*${exports.DOCUMENTATION_PATH_SUFFIX}.${exports.DOCUMENTATION_PATH_EXTENSION}`
-];
+exports.WATCH_TEMPLATES = ['/**/*'];
