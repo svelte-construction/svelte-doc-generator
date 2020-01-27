@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "svelte-doc-generator",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "",
   "scripts": {
     "check": "./node_modules/.bin/tsc --noEmit",
@@ -13,6 +13,14 @@
     "source:watch": "./node_modules/.bin/webpack --watch --mode development",
     "source:build": "./node_modules/.bin/webpack --mode production"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:svelte-construction/svelte-doc-generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/svelte-construction/svelte-doc-generator/issues"
+  },
+  "homepage": "https://github.com/svelte-construction/svelte-doc-generator",
   "bin": {
     "svelte-doc-generator": "./dist/system/cli.js"
   },
