@@ -3,6 +3,7 @@
 import * as path from 'path';
 import program from 'commander';
 import generate from './cli/generate';
+import watch from './cli/watch';
 import setup from './cli/setup';
 import { PATH_ROOT } from './constants';
 import Package from './models/Package';
@@ -17,6 +18,7 @@ program
 
 // bind commands
 generate(program);
+watch(program);
 setup(program);
 
 // parse arguments

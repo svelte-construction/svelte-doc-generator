@@ -3,7 +3,6 @@ import * as path from 'path';
 import colors from 'colors';
 import { Command } from 'commander';
 import displayCommandGreetings from './../helpers/displayCommandGreetings';
-import requiredCommandOption from '../helpers/requiredCommandOption';
 import displayCommandDone from '../helpers/displayCommandDone';
 import displayCommandStep from '../helpers/displayCommandStep';
 import { PATH_TEMPLATE } from '../constants';
@@ -12,10 +11,9 @@ export default function setup(program: Command) {
   program
     .command('setup')
     .description('Setup target project with the template')
-    .option('--project <path>', 'Path to the target project (where you store package.json for your project)')
+    .requiredOption('--project <path>', 'Path to the target project (where you store package.json for your project)')
     .action((cmd) => {
       displayCommandGreetings(cmd);
-      requiredCommandOption(cmd, 'project');
 
       const sourcePath = path.resolve(PATH_TEMPLATE);
       const targetPath = path.resolve(cmd.project);

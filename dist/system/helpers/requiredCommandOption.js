@@ -9,10 +9,12 @@ function requiredCommandOption(cmd, option, format = undefined) {
     if (!cmd[option]) {
         console.log(safe_1.default.red(`Option '${code}' is required.\n`));
         cmd.help();
+        process.exit(0);
     }
     if (format && !cmd[option].match(format)) {
         console.log(safe_1.default.red(`Option '${code}' value '${cmd[option]}' is in invalid format: should be ${format.toString()}.\n`));
         cmd.help();
+        process.exit(0);
     }
 }
 exports.default = requiredCommandOption;

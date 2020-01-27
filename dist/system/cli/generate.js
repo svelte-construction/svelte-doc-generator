@@ -24,7 +24,6 @@ const Dictionary_1 = __importDefault(require("../models/Dictionary"));
 const resolveMenuFromGenerators_1 = __importDefault(require("../helpers/resolveMenuFromGenerators"));
 const constants_1 = require("../constants");
 const displayCommandGreetings_1 = __importDefault(require("../helpers/displayCommandGreetings"));
-const requiredCommandOption_1 = __importDefault(require("../helpers/requiredCommandOption"));
 const displayCommandStep_1 = __importDefault(require("../helpers/displayCommandStep"));
 const displayCommandDone_1 = __importDefault(require("../helpers/displayCommandDone"));
 const createEmptyDirectory_1 = __importDefault(require("../helpers/createEmptyDirectory"));
@@ -32,78 +31,76 @@ function generate(program) {
     program
         .command('generate')
         .description('Generate documentation library from components')
-        .option('--library <path>', 'Path to the source library (where you store your components)')
-        .option('--target <path>', 'Path to the target library (where to store generated library documentations)')
+        .requiredOption('--library <path>', 'Path to the source library (where you store your components)')
+        .requiredOption('--target <path>', 'Path to the target library (where to store generated library documentations)')
         .action((cmd) => {
         displayCommandGreetings_1.default(cmd);
-        requiredCommandOption_1.default(cmd, 'library');
-        requiredCommandOption_1.default(cmd, 'target');
-        const packagePath = path.resolve(constants_1.PATH_ROOT, 'package.json');
-        const libraryPath = path.resolve(cmd.library);
-        const targetLibraryPath = path.resolve(cmd.target);
+        const pathToPackage = path.resolve(constants_1.PATH_ROOT, 'package.json');
+        const pathToLibrary = path.resolve(cmd.library);
+        const pathToTarget = path.resolve(cmd.target);
         displayCommandStep_1.default(cmd, colors_1.default.blue.bold('Generate documentation for whole library'));
-        displayCommandStep_1.default(cmd, `${colors_1.default.bold('Path to the library')}: ${colors_1.default.italic(libraryPath)}`);
-        displayCommandStep_1.default(cmd, `${colors_1.default.bold('Path to the target library documentation')}: ${colors_1.default.italic(targetLibraryPath)}`);
+        displayCommandStep_1.default(cmd, `${colors_1.default.bold('Path to the library')}: ${colors_1.default.italic(pathToLibrary)}`);
+        displayCommandStep_1.default(cmd, `${colors_1.default.bold('Path to the target library documentation')}: ${colors_1.default.italic(pathToTarget)}`);
         // create package instance
-        const that = new Package_1.default({ path: packagePath });
+        const that = new Package_1.default({ path: pathToPackage });
         // create empty directory for the library
-        createEmptyDirectory_1.default(targetLibraryPath);
+        createEmptyDirectory_1.default(pathToTarget);
         // loop for the whole directory
-        const directory = fs.readdirSync(libraryPath);
+        const directory = fs.readdirSync(pathToLibrary);
         const generated = [];
         for (const name of directory) {
-            const componentPath = path.resolve(libraryPath, name, `${name}.svelte`);
-            const documentationTargetPath = path.resolve(targetLibraryPath, name);
+            const pathToComponent = path.resolve(pathToLibrary, name, `${name}.svelte`);
+            const pathToDocumentationTargetDirectory = path.resolve(pathToTarget, name);
             displayCommandStep_1.default(cmd, colors_1.default.blue(` Generate documentation for ${colors_1.default.bold(name)}...`));
             // check if component exists
-            if (!fs.existsSync(componentPath)) {
-                displayCommandStep_1.default(cmd, colors_1.default.yellow(`  Unable to find component file: expected '${colors_1.default.italic(componentPath)}'; skipped`));
+            if (!fs.existsSync(pathToComponent)) {
+                displayCommandStep_1.default(cmd, colors_1.default.yellow(`  Unable to find component file: expected '${colors_1.default.italic(pathToComponent)}'; skipped`));
                 continue;
             }
             // check if documentation component exists
-            let documentationPath;
-            const documentationComponentPath = resolveDocumentationComponentPath_1.default(componentPath);
-            const documentationDirectoryPath = resolveDocumentationDirectoryPath_1.default(componentPath);
-            const documentationDirectoryComponentPath = resolveDocumentationDirectoryComponentPath_1.default(componentPath);
-            if (fs.existsSync(documentationComponentPath)) { // if documentation component exists
-                createEmptyDirectory_1.default(documentationTargetPath);
-                documentationPath = documentationComponentPath;
+            let pathToDocumentationSource;
+            const pathToDocumentationComponent = resolveDocumentationComponentPath_1.default(pathToComponent);
+            const pathToDocumentationDirectory = resolveDocumentationDirectoryPath_1.default(pathToComponent);
+            const pathToDocumentationDirectoryComponent = resolveDocumentationDirectoryComponentPath_1.default(pathToComponent);
+            if (fs.existsSync(pathToDocumentationComponent)) { // if documentation component exists
+                createEmptyDirectory_1.default(pathToDocumentationTargetDirectory);
+                pathToDocumentationSource = pathToDocumentationComponent;
             }
-            else if (fs.existsSync(documentationDirectoryPath)) { // if documentation directory exists
-                if (fs.existsSync(documentationDirectoryComponentPath)) { // if documentation component exists inside directory
-                    createEmptyDirectory_1.default(documentationTargetPath);
+            else if (fs.existsSync(pathToDocumentationDirectory)) { // if documentation directory exists
+                if (fs.existsSync(pathToDocumentationDirectoryComponent)) { // if documentation component exists inside directory
+                    createEmptyDirectory_1.default(pathToDocumentationTargetDirectory);
                     // copy all content from the documentation path to the target path
-                    fs.copySync(documentationDirectoryPath, documentationTargetPath, {
+                    fs.copySync(pathToDocumentationDirectory, pathToDocumentationTargetDirectory, {
                         overwrite: true,
                         recursive: true,
-                        filter: (src, dest) => src !== documentationDirectoryComponentPath
+                        filter: (src, dest) => src !== pathToDocumentationDirectoryComponent
                     });
-                    documentationPath = documentationDirectoryComponentPath;
+                    pathToDocumentationSource = pathToDocumentationDirectoryComponent;
                 }
                 else {
-                    displayCommandStep_1.default(cmd, colors_1.default.yellow(`  Unable to find component documentation file: expected ${colors_1.default.italic(documentationDirectoryComponentPath)}: skipped`));
+                    displayCommandStep_1.default(cmd, colors_1.default.yellow(`  Unable to find component documentation file: expected ${colors_1.default.italic(pathToDocumentationDirectoryComponent)}: skipped`));
                     continue;
                 }
             }
             else {
-                displayCommandStep_1.default(cmd, colors_1.default.yellow(`  Unable to find component documentation file: expected ${colors_1.default.italic(documentationComponentPath)}: skipped`));
+                displayCommandStep_1.default(cmd, colors_1.default.yellow(`  Unable to find component documentation file: expected ${colors_1.default.italic(pathToDocumentationComponent)}: skipped`));
                 continue;
             }
             // generate component documentation
-            const component = new Component_1.default({ path: componentPath });
-            const documentation = new Documentation_1.default({ path: documentationPath, package: that, component });
-            const generator = new Generator_1.default({ name, directory: documentationTargetPath, package: that, documentation });
+            const component = new Component_1.default({ path: pathToComponent });
+            const documentation = new Documentation_1.default({ path: pathToDocumentationSource, package: that, component });
+            const generator = new Generator_1.default({ name, directory: pathToDocumentationTargetDirectory, package: that, documentation });
             generator.generate();
             generated.push(generator);
             displayCommandStep_1.default(cmd, colors_1.default.green('  Successfully generated'));
         }
         // generate library index
-        const targetLibraryIndexPath = path.resolve(targetLibraryPath, 'index.js');
-        displayCommandStep_1.default(cmd, `Generate index inside ${colors_1.default.italic(targetLibraryIndexPath)}...`);
+        const pathToTargetIndex = path.resolve(pathToTarget, 'index.js');
+        displayCommandStep_1.default(cmd, `Generate index inside ${colors_1.default.italic(pathToTargetIndex)}...`);
         const items = resolveMenuFromGenerators_1.default(generated);
-        const dictionary = new Dictionary_1.default({ path: targetLibraryIndexPath, items });
+        const dictionary = new Dictionary_1.default({ path: pathToTargetIndex, items });
         dictionary.generate();
-        displayCommandStep_1.default(cmd, colors_1.default.green(`Successfully generated for ${generated.length} components inside ${colors_1.default.italic(targetLibraryPath)}`));
+        displayCommandStep_1.default(cmd, colors_1.default.green(`Successfully generated for ${generated.length} components inside ${colors_1.default.italic(pathToTarget)}`));
         displayCommandDone_1.default(cmd);
     });
 }

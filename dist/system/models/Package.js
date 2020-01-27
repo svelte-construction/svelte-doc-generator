@@ -23,5 +23,8 @@ class Package extends Source_1.default {
     get version() {
         return this.data.version;
     }
+    get cli() {
+        return this.data.bin[this.name];
+    }
 }
 exports.default = Package;

@@ -6,10 +6,14 @@ export declare namespace PackageSpace {
     type Data = {
         name: string;
         version: string;
+        bin: {
+            [key: string]: string;
+        };
     };
 }
 export default class Package extends Source<PackageSpace.Config> {
     get data(): PackageSpace.Data;
     get name(): string;
     get version(): string;
+    get cli(): string;
 }

@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "svelte-doc-generator",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "description": "",
   "scripts": {
     "check": "./node_modules/.bin/tsc --noEmit",
@@ -28,6 +28,7 @@
     "@types/dom-parser": "^0.1.0",
     "@types/estree": "0.0.42",
     "@types/fs-extra": "^8.0.1",
+    "@types/glob-watcher": "^5.0.0",
     "@types/md5": "^2.1.33",
     "@types/node": "^13.5.0",
     "@types/yargs": "^15.0.1",
@@ -59,8 +60,10 @@
     "comment-parser": "^0.7.2",
     "deepmerge": "^4.2.2",
     "dom-parser": "^0.1.6",
+    "glob-watcher": "^5.0.3",
     "highlight.js": "^9.18.0",
     "markdown-it": "^10.0.0",
+    "moment": "^2.24.0",
     "svelte": "^3.17.3",
     "svelte-loader": "^2.13.6",
     "svelte-preprocess": "^3.3.0",

@@ -9,6 +9,7 @@ export namespace PackageSpace {
   export type Data = {
     name: string;
     version: string;
+    bin: { [key: string]: string };
   }
 }
 
@@ -25,5 +26,9 @@ export default class Package extends Source<PackageSpace.Config> {
 
   public get version(): string {
     return this.data.version;
+  }
+
+  public get cli(): string {
+    return this.data.bin[this.name];
   }
 }

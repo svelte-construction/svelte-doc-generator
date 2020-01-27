@@ -14,6 +14,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const path = __importStar(require("path"));
 const commander_1 = __importDefault(require("commander"));
 const generate_1 = __importDefault(require("./cli/generate"));
+const watch_1 = __importDefault(require("./cli/watch"));
 const setup_1 = __importDefault(require("./cli/setup"));
 const constants_1 = require("./constants");
 const Package_1 = __importDefault(require("./models/Package"));
@@ -25,6 +26,7 @@ commander_1.default
     .description('Tool to generate svelte documentation');
 // bind commands
 generate_1.default(commander_1.default);
+watch_1.default(commander_1.default);
 setup_1.default(commander_1.default);
 // parse arguments
 commander_1.default.parse(process.argv);

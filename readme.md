@@ -53,6 +53,11 @@ This tool will include only components with `*Documentation.svelte` files inside
 node ./node_modules/.bin/svelte-doc-gnerator generate --library ./src/components --target ./site/library
 ```
 
+Or run documentation changes watcher to regenerate documentation on every change inside your library documentations components.
+```bash
+node ./node_modules/.bin/svelte-doc-gnerator watch --library ./src/components --target ./site/library
+```
+
 **5. Run your documentation site**
 
 This command will start `webpack dev server` to serve your site.
