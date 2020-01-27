@@ -1,7 +1,9 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import colors from 'colors';
-import resolveDocumentationPath from '../helpers/resolveDocumentationPath';
+import resolveDocumentationComponentPath from '../helpers/resolveDocumentationComponentPath';
+import resolveDocumentationDirectoryPath from '../helpers/resolveDocumentationDirectoryPath';
+import resolveDocumentationDirectoryComponentPath from '../helpers/resolveDocumentationDirectoryComponentPath';
 import Package from '../models/Package';
 import Component from '../models/Component';
 import Documentation from '../models/Documentation';
@@ -14,6 +16,7 @@ import displayCommandGreetings from '../helpers/displayCommandGreetings';
 import requiredCommandOption from '../helpers/requiredCommandOption';
 import displayCommandStep from '../helpers/displayCommandStep';
 import displayCommandDone from '../helpers/displayCommandDone';
+import createEmptyDirectory from '../helpers/createEmptyDirectory';
 
 export default function generate(program: Command) {
   program
@@ -35,14 +38,19 @@ export default function generate(program: Command) {
       displayCommandStep(cmd, `${colors.bold('Path to the library')}: ${colors.italic(libraryPath)}`);
       displayCommandStep(cmd, `${colors.bold('Path to the target library documentation')}: ${colors.italic(targetLibraryPath)}`);
 
+
       // create package instance
       const that = new Package({ path: packagePath });
+
+      // create empty directory for the library
+      createEmptyDirectory(targetLibraryPath);
 
       // loop for the whole directory
       const directory = fs.readdirSync(libraryPath);
       const generated = [];
       for (const name of directory) {
         const componentPath = path.resolve(libraryPath, name, `${name}.svelte`);
+        const documentationTargetPath = path.resolve(targetLibraryPath, name);
         displayCommandStep(cmd, colors.blue(` Generate documentation for ${colors.bold(name)}...`));
 
         // check if component exists
@@ -52,14 +60,35 @@ export default function generate(program: Command) {
         }
 
         // check if documentation component exists
-        const documentationPath = resolveDocumentationPath(componentPath);
-        if (!fs.existsSync(documentationPath)) {
-          displayCommandStep(cmd, colors.yellow(`  Unable to find component documentation file: expected '${colors.italic(documentationPath)}'; skipped`));
+        let documentationPath: string;
+        const documentationComponentPath = resolveDocumentationComponentPath(componentPath);
+        const documentationDirectoryPath = resolveDocumentationDirectoryPath(componentPath);
+        const documentationDirectoryComponentPath = resolveDocumentationDirectoryComponentPath(componentPath);
+        if (fs.existsSync(documentationComponentPath)) { // if documentation component exists
+          createEmptyDirectory(documentationTargetPath);
+          documentationPath = documentationComponentPath;
+        } else if (fs.existsSync(documentationDirectoryPath)) { // if documentation directory exists
+          if (fs.existsSync(documentationDirectoryComponentPath)) { // if documentation component exists inside directory
+            createEmptyDirectory(documentationTargetPath);
+
+            // copy all content from the documentation path to the target path
+            fs.copySync(documentationDirectoryPath, documentationTargetPath, {
+              overwrite: true,
+              recursive: true,
+              filter: (src: string, dest: string): boolean => src !== documentationDirectoryComponentPath
+            });
+
+            documentationPath = documentationDirectoryComponentPath;
+          } else {
+            displayCommandStep(cmd, colors.yellow(`  Unable to find component documentation file: expected ${colors.italic(documentationDirectoryComponentPath)}: skipped`));
+            continue;
+          }
+        } else {
+          displayCommandStep(cmd, colors.yellow(`  Unable to find component documentation file: expected ${colors.italic(documentationComponentPath)}: skipped`));
           continue;
         }
 
         // generate component documentation
-        const documentationTargetPath = path.resolve(targetLibraryPath, name);
         const component = new Component({ path: componentPath });
         const documentation = new Documentation({ path: documentationPath, package: that, component });
         const generator = new Generator({ name, directory: documentationTargetPath, package: that, documentation });

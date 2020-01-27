@@ -8,6 +8,7 @@
   export let source;
   export let declaration;
 
+  const withDeclaration = !!declaration;
   const withDescription = !!$$props.$$slots.description;
   const withUsages = !!$$props.$$slots.usages;
 
@@ -35,19 +36,24 @@
   <hr/>
 
   <div class="content">
-    <div class="declaration">
-      <ComponentDeclaration {...declaration} on:source={onSource} />
-    </div>
 
     {#if withUsages}
-      <br/>
-      <br/>
-      <hr/>
-
       <div class="usages">
         <ComponentUsages>
           <slot name="usages" />
         </ComponentUsages>
+      </div>
+    {/if}
+
+    {#if withUsages && withDeclaration}
+      <br/>
+      <br/>
+      <hr/>
+    {/if}
+
+    {#if withDeclaration}
+      <div class="declaration">
+        <ComponentDeclaration {...declaration} on:source={onSource} />
       </div>
     {/if}
   </div>

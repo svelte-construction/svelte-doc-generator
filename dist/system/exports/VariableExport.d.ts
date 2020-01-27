@@ -7,8 +7,8 @@ export declare namespace VariableExportSpace {
     type Result = {
         default: any;
         constant: boolean;
-        description: string | false;
-        note: string | false;
+        description: string | undefined;
+        note: string | undefined;
         location: LocationSpace.Result;
     };
 }
@@ -19,7 +19,7 @@ export default class VariableExport extends BaseExport<VariableExportSpace.Confi
     get constant(): boolean;
     get name(): string;
     get default(): any;
-    get description(): Description | false;
-    get note(): Description | false;
+    get description(): Description | undefined;
+    get note(): Description | undefined;
     get result(): VariableExportSpace.Result;
 }

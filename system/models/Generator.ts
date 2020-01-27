@@ -48,12 +48,7 @@ export default class Generator extends Base<GeneratorSpace.Config> {
   }
 
   public generate() {
-    // clean or create target directory
-    fs.existsSync(this.directory) && fs.removeSync(this.directory);
-    fs.mkdirSync(this.directory, { recursive: true });
-
     // reset target documentation file if exists
-    fs.existsSync(this.documentationPath) && fs.unlinkSync(this.documentationPath);
     fs.writeFileSync(this.documentationPath, this.documentation.source);
 
     // create documentation clone from cloned file

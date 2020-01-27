@@ -1,8 +1,18 @@
 <script>
+  import { onMount } from 'svelte';
   import Source from '../../Source';
 
   export let source;
   export let line;
+
+  let contentEl;
+
+  onMount(() => {
+    if (line) {
+      const lineEl = contentEl.querySelector(`[data-line][data-number="${line - 5}"]`);
+      lineEl && contentEl.scrollTo({ top: lineEl.offsetTop });
+    }
+  });
 
   function onCloseClick(e) {
     e.preventDefault();
@@ -26,7 +36,7 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <div class="modal-body content">
+      <div class="modal-body content" bind:this={contentEl}>
         <Source {source} {line} />
       </div>
     </div>

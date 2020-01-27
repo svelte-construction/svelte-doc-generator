@@ -10,6 +10,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const path = __importStar(require("path"));
 function resolveDocumentationPath(componentPath) {
     const { dir, name } = path.parse(componentPath);
-    return path.resolve(dir, `${name}Documentation.svelte`);
+    return path.resolve(dir, `${name}Documentation`);
 }
 exports.default = resolveDocumentationPath;

@@ -3,7 +3,7 @@
   import Source from './../../Source';
 
   export let title;
-  export let source;
+  export let source = '';
 
   $: decoded = decodeSpecialChars(source);
 </script>
@@ -20,8 +20,10 @@
       <slot />
     </div>
 
-    <div class="source">
-      <Source source={decoded} />
-    </div>
+    {#if decoded}
+      <div class="source">
+        <Source source={decoded} />
+      </div>
+    {/if}
   </div>
 </section>

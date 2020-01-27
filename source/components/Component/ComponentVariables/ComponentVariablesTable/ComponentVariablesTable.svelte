@@ -1,7 +1,9 @@
 <script>
   import { createEventDispatcher } from 'svelte';
+  import MarkdownIt from 'markdown-it';
 
   const dispatch = createEventDispatcher();
+  const md = new MarkdownIt();
 
   export let type;
   export let title;
@@ -41,8 +43,8 @@
             </td>
             <td><code>{typeof item.default}</code></td>
             <td><code>{JSON.stringify(item.default)}</code></td>
-            <td>{item.description || ''}</td>
-            <td>{item.note || ''}</td>
+            <td>{@html md.render(item.description || '')}</td>
+            <td>{@html md.render(item.note || '')}</td>
           </tr>
         {/each}
       </tbody>

@@ -6,8 +6,11 @@
   export let menu = [];
   export let routes = [];
 
+  let contentEl;
+
   let current = window.location.pathname;
   function onNavigate(e) {
+    contentEl.scrollTo({ top: 0 });
     const url = new URL(e.target.href);
     current = url.pathname;
   }
@@ -36,7 +39,7 @@
       </nav>
     </aside>
 
-    <main class="content">
+    <main class="content" bind:this={contentEl}>
       {#each routes as route}
         <Route {...route} />
       {/each}

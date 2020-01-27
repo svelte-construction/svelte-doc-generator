@@ -13,8 +13,13 @@ function resolveRelativeImports(source, originalPath, targetPath) {
     const { dir: targetDir } = path.parse(targetPath);
     const relative = path.relative(targetDir, originalDir);
     const relativeDir = path.dirname(relative);
+    // please, keep order of the replacements
+    // this is important to replace `../` first
+    // and then replace `./`
     return source
-        .replace(/(from\s*["'])(\.\/)/g, `$1${relative}/`)
-        .replace(/(from\s*["'])(\.\.\/)/g, `$1${relativeDir}/`);
+        .replace(/(import\s*["'])(\.\.\/)/g, `$1${relativeDir}/`)
+        .replace(/(import\s*["'])(\.\/)/g, `$1${relative}/`)
+        .replace(/(from\s*["'])(\.\.\/)/g, `$1${relativeDir}/`)
+        .replace(/(from\s*["'])(\.\/)/g, `$1${relative}/`);
 }
 exports.default = resolveRelativeImports;

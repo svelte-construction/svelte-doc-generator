@@ -41,12 +41,11 @@ class FunctionExport extends BaseExport_1.default {
             if (!this.data.leadingComments) {
                 return false;
             }
-            const data = this.data.leadingComments[0];
-            return new Description_1.default({ data });
+            return new Description_1.default({ comments: this.data.leadingComments });
         }
         const content = this.jsdoc.description;
         const data = { type: 'Block', value: content };
-        return new Description_1.default({ data });
+        return new Description_1.default({ comments: [data] });
     }
     get tags() {
         if (!this.jsdoc) {

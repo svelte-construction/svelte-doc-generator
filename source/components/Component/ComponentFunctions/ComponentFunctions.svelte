@@ -1,8 +1,10 @@
 <script>
   import { createEventDispatcher } from 'svelte';
+  import MarkdownIt from 'markdown-it';
   import ComponentDefinitions from './../ComponentDefinitions'
 
   const dispatch = createEventDispatcher();
+  const md = new MarkdownIt;
 
   export let data = {};
 
@@ -45,8 +47,8 @@
                     <kbd>{argument.name}</kbd>&nbsp;
                   {/each}
                 </td>
-                <td>{item.description || ''}</td>
-                <td>{item.note || ''}</td>
+                <td>{@html md.render(item.description || '')}</td>
+                <td>{@html md.render(item.note || '')}</td>
               </tr>
             {/each}
           </tbody>

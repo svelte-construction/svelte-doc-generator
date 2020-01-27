@@ -64,13 +64,12 @@ export default class FunctionExport extends BaseExport<FunctionExportSpace.Confi
         return false;
       }
 
-      const data = this.data.leadingComments[0];
-      return new Description({ data });
+      return new Description({ comments: this.data.leadingComments });
     }
 
     const content = this.jsdoc.description;
     const data = { type: 'Block', value: content };
-    return new Description({ data });
+    return new Description({ comments: [data] });
   }
 
   public get tags(): any {

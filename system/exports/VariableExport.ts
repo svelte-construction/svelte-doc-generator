@@ -17,8 +17,8 @@ export namespace VariableExportSpace {
   export type Result = {
     default: any;
     constant: boolean;
-    description: string | false;
-    note: string | false;
+    description: string | undefined;
+    note: string | undefined;
     location: LocationSpace.Result;
   };
 }
@@ -53,22 +53,20 @@ export default class VariableExport extends BaseExport<VariableExportSpace.Confi
     return (this.declarator.init as Literal).value;
   }
 
-  public get description(): Description | false {
+  public get description(): Description | undefined {
     if (!this.data.leadingComments) {
-      return false;
+      return undefined;
     }
 
-    const data = this.data.leadingComments[0];
-    return new Description({ data });
+    return new Description({ comments: this.data.leadingComments });
   }
 
-  public get note(): Description | false {
-    if (!this.declaration.trailingComments) {
-      return false;
+  public get note(): Description | undefined {
+    if (!this.data.trailingComments) {
+      return undefined;
     }
 
-    const data = this.declaration.trailingComments[0];
-    return new Description({ data });
+    return new Description({ comments: this.data.trailingComments });
   }
 
   public get result(): VariableExportSpace.Result {

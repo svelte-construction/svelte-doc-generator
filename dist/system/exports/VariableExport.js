@@ -29,17 +29,15 @@ class VariableExport extends BaseExport_1.default {
     }
     get description() {
         if (!this.data.leadingComments) {
-            return false;
+            return undefined;
         }
-        const data = this.data.leadingComments[0];
-        return new Description_1.default({ data });
+        return new Description_1.default({ comments: this.data.leadingComments });
     }
     get note() {
-        if (!this.declaration.trailingComments) {
-            return false;
+        if (!this.data.trailingComments) {
+            return undefined;
         }
-        const data = this.declaration.trailingComments[0];
-        return new Description_1.default({ data });
+        return new Description_1.default({ comments: this.data.trailingComments });
     }
     get result() {
         return {

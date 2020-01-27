@@ -7,10 +7,11 @@ import ClassExport, { ClassExportSpace } from '../exports/ClassExport';
 import { ExportType } from '../types/ExportType';
 import { BaseExportSpace } from '../exports/BaseExport';
 import { ExportResultType } from '../types/ExportResultType';
+import resolveMarkdownFromComment from '../helpers/resolveMarkdownFromComment';
 
 export namespace DescriptionSpace {
   export type Config = {
-    data: Data;
+    comments: Data[];
   }
 
   export type Data = {
@@ -21,20 +22,10 @@ export namespace DescriptionSpace {
 
 export default class Description extends Base<DescriptionSpace.Config> {
 
-  public data: DescriptionSpace.Data;
+  public comments: DescriptionSpace.Data[];
 
   public get markdown(): string {
-    return this.data.value
-      // remove trailing stars
-      .replace(/^\*+/, '')
-      .replace(/\*+$/, '')
-      .replace(/\n\*/g, '\n')
-      // remove trailing new lines
-      .replace(/^\n+/, '')
-      .replace(/\n+$/, '')
-      // remove trailing spaces before every line
-      .replace(/\n\s+/g, '\n')
-      // remove trailing spaces
-      .trim();
+    const strings = this.comments.map((comment) => comment.value);
+    return strings.map(resolveMarkdownFromComment).join('  \n');
   }
 }

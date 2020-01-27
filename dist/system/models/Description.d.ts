@@ -1,7 +1,7 @@
 import Base from '../base/Base';
 export declare namespace DescriptionSpace {
     type Config = {
-        data: Data;
+        comments: Data[];
     };
     type Data = {
         type: string;
@@ -9,6 +9,6 @@ export declare namespace DescriptionSpace {
     };
 }
 export default class Description extends Base<DescriptionSpace.Config> {
-    data: DescriptionSpace.Data;
+    comments: DescriptionSpace.Data[];
     get markdown(): string;
 }

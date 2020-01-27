@@ -28,7 +28,7 @@
 
   <div class="lines">
     {#each lines as {indent, source}, index}
-      <div class="line" class:active={isActiveLine(index)} class:empty={!source}>
+      <div class="line" class:active={isActiveLine(index)} class:empty={!source} data-line="true" data-number={index + 1}>
         {@html getLineIndent(indent)}{@html source}
       </div>
     {/each}
