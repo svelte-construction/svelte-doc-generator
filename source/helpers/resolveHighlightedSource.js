@@ -3,9 +3,9 @@ import hljs from 'highlight.js';
 // import highlight styles
 import 'highlight.js/styles/atom-one-dark.css';
 
-export default function resolveHighlightedSource(source) {
+export default function resolveHighlightedSource(source, lang = 'html') {
   // highlight source code
-  const highlighted = hljs.highlight('html', source).value;
+  const highlighted = hljs.highlight(lang, source).value;
 
   // split source code into lines with indent value
   const lines = highlighted.split('\n').map((line) => {

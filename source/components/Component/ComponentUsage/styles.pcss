@@ -14,10 +14,30 @@
 }
 
 .preview {
-  padding: 20px;
-  background: $white;
   border-radius: 5px 5px 0 0;
   border: 1px solid $gray;
+
+  &.theme {
+    &_light {
+      background: $white;
+    }
+
+    &_dark {
+      background: $black;
+    }
+
+    &_neutral {
+      background: $gray-disabled;
+    }
+  }
+
+  &.with-overflow {
+    overflow: hidden;
+  }
+
+  &.with-padding {
+    padding: 20px;
+  }
 }
 
 .source {

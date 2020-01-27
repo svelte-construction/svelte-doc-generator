@@ -4,7 +4,7 @@
   import ComponentUsages from './ComponentUsages';
   import { source as sourceStore, line as lineStore } from './../../stores';
 
-  export let title;
+  export let title = 'Component';
   export let source;
   export let declaration;
 

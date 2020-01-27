@@ -1,12 +1,12 @@
 import convertCamelToCode from './convertCamelToCode';
 
 export default function resolveMenuFromLibrary(index, basePath = '/') {
-  const menu = index.map(({ name, title }) => ({
+  const menu = index.map(({ name }) => ({
     path: basePath + convertCamelToCode(name) + '/',
-    label: title,
+    label: name,
   }));
 
-  menu.sort((a, b) => (a.label > b.label) ? 1 : ((b.label > a.label) ? -1 : 0));
+  menu.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0));
 
   return menu;
 }

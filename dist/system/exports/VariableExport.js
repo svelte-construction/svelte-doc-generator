@@ -25,7 +25,7 @@ class VariableExport extends BaseExport_1.default {
         if (!this.declarator.init) {
             return undefined;
         }
-        return this.declarator.init.value;
+        return VariableExport.resolveDefaultValue(this.declarator.init);
     }
     get description() {
         if (!this.data.leadingComments) {

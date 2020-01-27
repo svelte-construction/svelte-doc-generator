@@ -3,6 +3,7 @@
 
   export let source;
   export let line;
+  export let lang = 'html';
 
   function getLineIndent(count) {
     return '&nbsp;&nbsp;'.repeat(count);
@@ -12,7 +13,7 @@
     return line === index + 1;
   }
 
-  $: lines = resolveHighlightedSource(source);
+  $: lines = resolveHighlightedSource(source, lang);
 </script>
 
 <style src="./styles.pcss">

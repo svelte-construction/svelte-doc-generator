@@ -1,6 +1,14 @@
 import parse from 'comment-parser';
 import Base from '../base/Base';
-import { ExportNamedDeclaration, FunctionDeclaration, Identifier, Node } from 'estree';
+import {
+  AssignmentPattern,
+  ExportNamedDeclaration,
+  FunctionDeclaration,
+  Identifier,
+  Literal,
+  Node,
+  ObjectExpression
+} from 'estree';
 import BaseExport, { BaseExportSpace } from './BaseExport';
 import Description from '../models/Description';
 import { LocationSpace } from '../models/Location';
@@ -17,6 +25,7 @@ export namespace FunctionExportSpace {
 
   export type Argument = {
     name: string;
+    default?: any;
   };
 }
 
@@ -88,8 +97,19 @@ export default class FunctionExport extends BaseExport<FunctionExportSpace.Confi
 
     const args: FunctionExportSpace.Argument[] = [];
     for (const param of declaration.params) {
-      const identifier = param as Identifier;
-      args.push({ name: identifier.name });
+      let name = '?';
+      let value;
+      if (param.type === 'Identifier') {
+        const identifier = param as Identifier;
+        name = identifier.name;
+      } else if (param.type === 'AssignmentPattern') {
+        const assigment = param as AssignmentPattern;
+        const identifier = assigment.left as Identifier;
+        name = identifier.name;
+        value = FunctionExport.resolveDefaultValue(assigment.right);
+      }
+
+      args.push({ name, default: value });
     }
 
     return args;

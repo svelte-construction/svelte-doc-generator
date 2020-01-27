@@ -13,6 +13,7 @@ export declare namespace FunctionExportSpace {
     };
     type Argument = {
         name: string;
+        default?: any;
     };
 }
 export default class FunctionExport extends BaseExport<FunctionExportSpace.Config> {

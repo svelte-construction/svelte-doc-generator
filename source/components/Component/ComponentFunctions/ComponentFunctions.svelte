@@ -8,6 +8,12 @@
 
   export let data = {};
 
+  function resolveFunctionArgumentLabel(argument) {
+    const suffix = typeof argument.default !== 'undefined'
+      ? ` = ${JSON.stringify(argument.default)}` : '';
+    return `${argument.name}${suffix}`;
+  }
+
   function onClickDefinition(e) {
     e.preventDefault();
     const line = parseInt(e.target.dataset.line, 10);
@@ -44,7 +50,7 @@
                 </td>
                 <td>
                   {#each item.arguments as argument}
-                    <kbd>{argument.name}</kbd>&nbsp;
+                    <kbd>{@html resolveFunctionArgumentLabel(argument)}</kbd>&nbsp;
                   {/each}
                 </td>
                 <td>{@html md.render(item.description || '')}</td>

@@ -10,5 +10,17 @@ class BaseExport extends Base_1.default {
         const data = this.data.loc;
         return new Location_1.default({ data });
     }
+    static resolveDefaultValue(node) {
+        if (node.type === 'Literal') {
+            const literal = node;
+            return literal.value;
+        }
+        else if (node.type === 'ObjectExpression') {
+            // TODO Parse properties structure in desired value.
+            // const objectExpression = assigment.right as ObjectExpression;
+            return {};
+        }
+        return undefined;
+    }
 }
 exports.default = BaseExport;

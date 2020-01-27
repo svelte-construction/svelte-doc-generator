@@ -11,6 +11,8 @@ function resolveMarkdownFromComment(value) {
         .replace(/\n+$/, '')
         // remove trailing spaces before every line
         .replace(/\n\s+/g, '\n')
+        // replace new lines with markdown new lines
+        .replace(/\n/g, '  \n')
         // remove trailing spaces
         .trim();
 }

@@ -60,8 +60,19 @@ class FunctionExport extends BaseExport_1.default {
         }
         const args = [];
         for (const param of declaration.params) {
-            const identifier = param;
-            args.push({ name: identifier.name });
+            let name = '?';
+            let value;
+            if (param.type === 'Identifier') {
+                const identifier = param;
+                name = identifier.name;
+            }
+            else if (param.type === 'AssignmentPattern') {
+                const assigment = param;
+                const identifier = assigment.left;
+                name = identifier.name;
+                value = FunctionExport.resolveDefaultValue(assigment.right);
+            }
+            args.push({ name, default: value });
         }
         return args;
     }

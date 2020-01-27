@@ -2,7 +2,7 @@
 Do you have a library of svelte components?
 You can generate a documentation for whole your library.
 
-![example](./doc/example.png)
+![example](doc/screenshots/component-input.png)
 
 ## Installation
 **1. Install the package**
@@ -68,3 +68,48 @@ node ./node_modules/webpack-dev-server/.bin/webpack-dev-server.js --mode develop
 **6. Open localhost**
 
 Open `localhost:8080` in your browser and take a look at the result!
+
+## Full example
+Take a look at the `CheckboxGroupDocumentation.svelte` example below.
+Do not take in mind `CheckboxGroup` component.
+```html
+<script>
+  import { Component } from 'svelte-doc-generator';
+  import CheckboxGroup from './index';
+
+  const checkboxes = [
+    {
+      label: 'Можно с животными',
+      id: 'animals-are-allowed',
+      value: 'animalsAreAllowed'
+    },
+    {
+      label: 'Можно с детьми',
+      id: 'kids-are-allowed',
+      value: 'kidsAreAllowed'
+    }
+  ];
+
+  const source = `const checkboxes = ${JSON.stringify(checkboxes, null, 2)};`;
+</script>
+
+<Component title="Checkbox group">
+  <div slot="description">
+    Component to draw grouped checkboxes.
+    <br/>
+    <br/><Component.Code {source} lang="javascript" />
+  </div>
+
+  <div slot="usages">
+    <Component.Usage title="Default checkboxes group">
+      <CheckboxGroup {checkboxes} />
+    </Component.Usage>
+  </div>
+</Component>
+```
+
+This code will generate the following output.
+![example](doc/screenshots/component-checkbox-group.png)
+
+# TODO
+- [ ] Create documentation for every exported svelte component.

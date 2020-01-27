@@ -50,7 +50,7 @@ export default class VariableExport extends BaseExport<VariableExportSpace.Confi
       return undefined;
     }
 
-    return (this.declarator.init as Literal).value;
+    return VariableExport.resolveDefaultValue(this.declarator.init);
   }
 
   public get description(): Description | undefined {
