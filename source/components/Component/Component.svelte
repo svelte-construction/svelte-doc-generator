@@ -54,9 +54,9 @@
       <hr/>
     {/if}
 
-    <div class="initialization">
-      <ComponentInitialization {...initialization} />
-    </div>
+    <!-- <div class="initialization"> -->
+      <!-- <ComponentInitialization {...initialization} /> -->
+    <!-- </div> -->
 
     <div class="declaration">
       <ComponentDeclaration {...declaration} on:source={onSource} />
