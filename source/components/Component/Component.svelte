@@ -14,8 +14,8 @@
 
   const withDefinition = !!definition;
   const withInitialization = !!initialization;
-  const withDescription = !!$$props.$$slots.description;
-  const withUsages = !!$$props.$$slots.usages;
+  const withDescription = !!($$props.$$slots && $$props.$$slots.description);
+  const withUsages = !!($$props.$$slots && $$props.$$slots.usages);
   const witContent = withDefinition || withInitialization || withUsages;
 
   function onSource({ detail }) {
