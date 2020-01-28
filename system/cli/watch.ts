@@ -18,7 +18,6 @@ import displayCommandStep from '../helpers/displayCommandStep';
 import displayCommandDone from '../helpers/displayCommandDone';
 import createEmptyDirectory from '../helpers/createEmptyDirectory';
 import { execSync } from "child_process";
-import create from '../helpers/create';
 
 function trigger(cmd: Command, pathToCli: string, pathToLibrary: string, pathToTarget: string, show: boolean = false) {
   try {
@@ -53,7 +52,7 @@ export default function watch(program: Command) {
       displayCommandStep(cmd, `${colors.bold('Path to the target library documentation')}: ${colors.italic(pathToTarget)}`);
 
       // create package instance
-      const that = create(Package).configure({ path: pathToPackage });
+      const that = new Package({ path: pathToPackage });
 
       // resolve path to the cli tool
       const pathToCli = path.resolve(PATH_ROOT, that.cli);

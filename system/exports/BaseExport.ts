@@ -1,7 +1,6 @@
 import Base from '../base/Base';
 import { Declaration, ExportNamedDeclaration, Literal, Node, SourceLocation } from 'estree';
 import Location from '../models/Location';
-import create from '../helpers/create';
 
 export namespace BaseExportSpace {
   export type Config = {
@@ -23,7 +22,7 @@ export default abstract class BaseExport<C> extends Base<BaseExportSpace.Config 
 
   public get location(): Location {
     const data = this.data.loc as SourceLocation;
-    return create(Location).configure({ data });
+    return new Location({ data });
   }
 
   protected static resolveDefaultValue(node: Node): any {

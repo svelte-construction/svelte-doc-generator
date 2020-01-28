@@ -8,7 +8,10 @@ const generateUniqueIdentifier_1 = __importDefault(require("../helpers/generateU
 class Variable extends Base_1.default {
     constructor() {
         super(...arguments);
-        this.asPlaceholder = false;
+        this.defaults = {
+            value: false,
+            asPlaceholder: false
+        };
     }
     get name() {
         if (!this._name) {

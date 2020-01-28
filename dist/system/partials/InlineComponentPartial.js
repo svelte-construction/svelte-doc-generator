@@ -3,37 +3,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const SvelteSource_1 = __importDefault(require("../base/SvelteSource"));
 const Variable_1 = __importDefault(require("../models/Variable"));
 const Attribute_1 = __importDefault(require("../models/Attribute"));
 const encodeSpecialChars_1 = __importDefault(require("../helpers/encodeSpecialChars"));
-const generateUniqueIdentifier_1 = __importDefault(require("../helpers/generateUniqueIdentifier"));
-class BasePartial extends SvelteSource_1.default {
-    get id() {
-        if (!this._id) {
-            this._id = generateUniqueIdentifier_1.default('${id}');
-        }
-        return this._id;
-    }
-    get start() {
-        return this.node.start;
-    }
-    get end() {
-        return this.node.end;
-    }
+const BasePartial_1 = __importDefault(require("./BasePartial"));
+class InlineComponentPartial extends BasePartial_1.default {
     get code() {
-        if (!this.node.children.length) {
+        const node = this.node;
+        if (!node.children.length) {
             return '';
         }
-        const start = this.node.children[0].start;
-        const end = this.node.children[this.node.children.length - 1].end;
+        const start = node.children[0].start;
+        const end = node.children[node.children.length - 1].end;
         return this.source.substr(start, end - start);
-    }
-    get content() {
-        return this.code;
-    }
-    get slot() {
-        return undefined;
     }
     generate(variables = [], attributes = []) {
         const source = encodeSpecialChars_1.default(this.code);
@@ -79,4 +61,4 @@ class BasePartial extends SvelteSource_1.default {
             ? attribute.value[0].data : '';
     }
 }
-exports.default = BasePartial;
+exports.default = InlineComponentPartial;

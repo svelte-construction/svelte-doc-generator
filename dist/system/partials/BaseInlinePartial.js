@@ -22,11 +22,15 @@ class BasePartial extends SvelteSource_1.default {
         return this.node.end;
     }
     get code() {
-        if (!this.node.children.length) {
+        if (this.node.type !== 'InlineComponent') {
             return '';
         }
-        const start = this.node.children[0].start;
-        const end = this.node.children[this.node.children.length - 1].end;
+        const node = this.node;
+        if (!node.children.length) {
+            return '';
+        }
+        const start = node.children[0].start;
+        const end = node.children[node.children.length - 1].end;
         return this.source.substr(start, end - start);
     }
     get content() {

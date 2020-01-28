@@ -10,8 +10,6 @@ const DefaultImport_1 = __importDefault(require("../imports/DefaultImport"));
 const UsagePartial_1 = __importDefault(require("../partials/UsagePartial"));
 const MainPartial_1 = __importDefault(require("../partials/MainPartial"));
 const DescriptionPartial_1 = __importDefault(require("../partials/DescriptionPartial"));
-const InitializationPartial_1 = __importDefault(require("../partials/InitializationPartial"));
-const create_1 = __importDefault(require("../helpers/create"));
 const importsMap = {
     ImportSpecifier: Import_1.default,
     ImportDefaultSpecifier: DefaultImport_1.default,
@@ -25,11 +23,14 @@ class Documentation extends SvelteSource_1.default {
         return this.main
             .getNativeAttributeAsString('title');
     }
+    get module() {
+        return this.tree.module;
+    }
+    get instance() {
+        return this.tree.instance;
+    }
     get main() {
         return Documentation.resolveTagNode(this, MainPartial_1.default);
-    }
-    get initialization() {
-        return create_1.default(InitializationPartial_1.default).configure({});
     }
     get description() {
         return Documentation.resolveTagNode(this, DescriptionPartial_1.default);
@@ -40,8 +41,6 @@ class Documentation extends SvelteSource_1.default {
     get partials() {
         const partials = [];
         this.main && partials.push(this.main);
-        // TODO Implement initialization code
-        // this.initialization && partials.push(this.initialization);
         this.description && partials.push(this.description);
         return [...partials, ...this.usages];
     }
@@ -113,7 +112,7 @@ class Documentation extends SvelteSource_1.default {
         for (const selfImportDeclaration of selfImportDeclarations) {
             for (const specifier of selfImportDeclaration.specifiers) {
                 const model = importsMap[specifier.type];
-                const instance = create_1.default(model).configure({ script, specifier: specifier });
+                const instance = new model({ script, specifier: specifier });
                 tags = [...tags, ...instance.resolveTags(namePath)];
             }
         }
@@ -128,7 +127,7 @@ class Documentation extends SvelteSource_1.default {
     static resolveTagNodes(documentation, partial) {
         const tags = Documentation.resolveTags(documentation.package, documentation.tree, partial.alias);
         const nodes = Documentation.findComponentByTagsInHtml(documentation.tree.html, tags);
-        return nodes.map((node) => create_1.default(partial).configure({ path: documentation.path, node, documentation: documentation }));
+        return nodes.map((node) => new partial({ path: documentation.path, node, documentation: documentation }));
     }
     static resolveTagNode(documentation, partial) {
         const partials = Documentation.resolveTagNodes(documentation, partial);

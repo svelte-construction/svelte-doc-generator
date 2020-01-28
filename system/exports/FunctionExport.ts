@@ -12,7 +12,6 @@ import {
 import BaseExport, { BaseExportSpace } from './BaseExport';
 import Description from '../models/Description';
 import { LocationSpace } from '../models/Location';
-import create from '../helpers/create';
 
 export namespace FunctionExportSpace {
   export type Config = {};
@@ -74,12 +73,12 @@ export default class FunctionExport extends BaseExport<FunctionExportSpace.Confi
         return false;
       }
 
-      return create(Description).configure({ comments: this.data.leadingComments });
+      return new Description({ comments: this.data.leadingComments });
     }
 
     const content = this.jsdoc.description;
     const data = { type: 'Block', value: content };
-    return create(Description).configure({ comments: [data] });
+    return new Description({ comments: [data] });
   }
 
   public get tags(): any {

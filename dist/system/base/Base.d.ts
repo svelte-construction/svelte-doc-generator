@@ -1,3 +1,8 @@
 export default class Base<C> extends Object {
-    configure(config: C): this;
+    private _defaults;
+    config: C;
+    constructor(config: C);
+    get defaults(): C;
+    set defaults(config: C);
+    private configure;
 }

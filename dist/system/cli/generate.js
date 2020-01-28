@@ -27,7 +27,6 @@ const displayCommandGreetings_1 = __importDefault(require("../helpers/displayCom
 const displayCommandStep_1 = __importDefault(require("../helpers/displayCommandStep"));
 const displayCommandDone_1 = __importDefault(require("../helpers/displayCommandDone"));
 const createEmptyDirectory_1 = __importDefault(require("../helpers/createEmptyDirectory"));
-const create_1 = __importDefault(require("../helpers/create"));
 function generate(program) {
     program
         .command('generate')
@@ -43,7 +42,7 @@ function generate(program) {
         displayCommandStep_1.default(cmd, `${colors_1.default.bold('Path to the library')}: ${colors_1.default.italic(pathToLibrary)}`);
         displayCommandStep_1.default(cmd, `${colors_1.default.bold('Path to the target library documentation')}: ${colors_1.default.italic(pathToTarget)}`);
         // create package instance
-        const that = create_1.default(Package_1.default).configure({ path: pathToPackage });
+        const that = new Package_1.default({ path: pathToPackage });
         // create empty directory for the library
         createEmptyDirectory_1.default(pathToTarget);
         // loop for the whole directory
@@ -88,9 +87,9 @@ function generate(program) {
                 continue;
             }
             // generate component documentation
-            const component = create_1.default(Component_1.default).configure({ path: pathToComponent });
-            const documentation = create_1.default(Documentation_1.default).configure({ path: pathToDocumentationSource, package: that, component });
-            const generator = create_1.default(Generator_1.default).configure({ name, directory: pathToDocumentationTargetDirectory, package: that, documentation });
+            const component = new Component_1.default({ path: pathToComponent });
+            const documentation = new Documentation_1.default({ path: pathToDocumentationSource, package: that, component });
+            const generator = new Generator_1.default({ name, directory: pathToDocumentationTargetDirectory, package: that, documentation });
             generator.generate();
             generated.push(generator);
             displayCommandStep_1.default(cmd, colors_1.default.green('  Successfully generated'));
@@ -99,7 +98,7 @@ function generate(program) {
         const pathToTargetIndex = path.resolve(pathToTarget, 'index.js');
         displayCommandStep_1.default(cmd, `Generate index inside ${colors_1.default.italic(pathToTargetIndex)}...`);
         const items = resolveMenuFromGenerators_1.default(generated);
-        const dictionary = create_1.default(Dictionary_1.default).configure({ path: pathToTargetIndex, items });
+        const dictionary = new Dictionary_1.default({ path: pathToTargetIndex, items });
         dictionary.generate();
         displayCommandStep_1.default(cmd, colors_1.default.green(`Successfully generated for ${generated.length} components inside ${colors_1.default.italic(pathToTarget)}`));
         displayCommandDone_1.default(cmd);

@@ -5,7 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const BaseExport_1 = __importDefault(require("./BaseExport"));
 const Description_1 = __importDefault(require("../models/Description"));
-const create_1 = __importDefault(require("../helpers/create"));
 class VariableExport extends BaseExport_1.default {
     get declaration() {
         return this.data.declaration;
@@ -32,13 +31,13 @@ class VariableExport extends BaseExport_1.default {
         if (!this.data.leadingComments) {
             return undefined;
         }
-        return create_1.default(Description_1.default).configure({ comments: this.data.leadingComments });
+        return new Description_1.default({ comments: this.data.leadingComments });
     }
     get note() {
         if (!this.data.trailingComments) {
             return undefined;
         }
-        return create_1.default(Description_1.default).configure({ comments: this.data.trailingComments });
+        return new Description_1.default({ comments: this.data.trailingComments });
     }
     get result() {
         return {

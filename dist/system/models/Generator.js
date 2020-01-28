@@ -15,7 +15,6 @@ const path = __importStar(require("path"));
 const Documentation_1 = __importDefault(require("./Documentation"));
 const Base_1 = __importDefault(require("../base/Base"));
 const resolveRelativeImports_1 = __importDefault(require("../helpers/resolveRelativeImports"));
-const create_1 = __importDefault(require("../helpers/create"));
 class Generator extends Base_1.default {
     constructor() {
         super(...arguments);
@@ -36,7 +35,7 @@ class Generator extends Base_1.default {
         const path = this.documentationPath;
         const that = this.documentation.package;
         const component = this.documentation.component;
-        const clone = create_1.default(Documentation_1.default).configure({ path, package: that, component });
+        const clone = new Documentation_1.default({ path, package: that, component });
         // rebind all imports paths and update the file
         clone.source = resolveRelativeImports_1.default(clone.source, this.documentation.path, this.documentationPath);
         // replace all partials

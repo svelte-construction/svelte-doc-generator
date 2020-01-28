@@ -2,7 +2,7 @@ import Component from './Component';
 import SvelteSource from '../base/SvelteSource';
 import { Ast, Script, TemplateNode } from 'svelte/types/compiler/interfaces';
 import Package from './Package';
-import { ImportDeclaration } from 'estree';
+import { ImportDeclaration, Program } from 'estree';
 import Import from '../imports/Import';
 import NamespaceImport from '../imports/NamespaceImport';
 import DefaultImport from '../imports/DefaultImport';
@@ -12,8 +12,6 @@ import InlineComponent from 'svelte/types/compiler/compile/nodes/InlineComponent
 import { PartialClassType, PartialType } from '../types/PartialType';
 import Variable from './Variable';
 import DescriptionPartial from '../partials/DescriptionPartial';
-import InitializationPartial from '../partials/InitializationPartial';
-import create from '../helpers/create';
 import { ImportType } from '../types/ImportType';
 
 export namespace DocumentationSpace {
@@ -44,12 +42,16 @@ export default class Documentation extends SvelteSource<DocumentationSpace.Confi
       .getNativeAttributeAsString('title');
   }
 
-  public get main(): MainPartial | undefined {
-    return Documentation.resolveTagNode(this, MainPartial);
+  public get module(): Script {
+    return this.tree.module;
   }
 
-  public get initialization(): MainPartial | undefined {
-    return create(InitializationPartial).configure({  });
+  public get instance(): Script {
+    return this.tree.instance;
+  }
+
+  public get main(): MainPartial | undefined {
+    return Documentation.resolveTagNode(this, MainPartial);
   }
 
   public get description(): DescriptionPartial | undefined {
@@ -63,8 +65,6 @@ export default class Documentation extends SvelteSource<DocumentationSpace.Confi
   public get partials(): PartialType[] {
     const partials = [];
     this.main && partials.push(this.main);
-    // TODO Implement initialization code
-    // this.initialization && partials.push(this.initialization);
     this.description && partials.push(this.description);
     return [...partials, ...this.usages];
   }
@@ -149,8 +149,8 @@ export default class Documentation extends SvelteSource<DocumentationSpace.Confi
     let tags: string[] = [];
     for (const selfImportDeclaration of selfImportDeclarations) {
       for (const specifier of selfImportDeclaration.specifiers) {
-        const model = (importsMap[specifier.type] as any) as ImportType;
-        const instance = create(model).configure({ script, specifier: specifier as any });
+        const model = importsMap[specifier.type];
+        const instance = new model({ script, specifier: specifier as any });
         tags = [...tags, ...instance.resolveTags(namePath)];
       }
     }
@@ -169,7 +169,7 @@ export default class Documentation extends SvelteSource<DocumentationSpace.Confi
   private static resolveTagNodes(documentation: Documentation, partial: PartialClassType): PartialType[] {
     const tags = Documentation.resolveTags(documentation.package, documentation.tree, partial.alias);
     const nodes = Documentation.findComponentByTagsInHtml(documentation.tree.html, tags);
-    return nodes.map((node) => create(partial).configure({ path: documentation.path, node, documentation: documentation }));
+    return nodes.map((node) => new partial({ path: documentation.path, node, documentation: documentation }));
   }
 
   private static resolveTagNode(documentation: Documentation, partial: PartialClassType): PartialType | undefined {

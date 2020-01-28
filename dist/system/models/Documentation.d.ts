@@ -1,5 +1,6 @@
 import Component from './Component';
 import SvelteSource from '../base/SvelteSource';
+import { Script } from 'svelte/types/compiler/interfaces';
 import Package from './Package';
 import UsagePartial from '../partials/UsagePartial';
 import MainPartial from '../partials/MainPartial';
@@ -16,8 +17,9 @@ export default class Documentation extends SvelteSource<DocumentationSpace.Confi
     package: Package;
     component: Component;
     get title(): string;
+    get module(): Script;
+    get instance(): Script;
     get main(): MainPartial | undefined;
-    get initialization(): MainPartial | undefined;
     get description(): DescriptionPartial | undefined;
     get usages(): UsagePartial[];
     get partials(): PartialType[];

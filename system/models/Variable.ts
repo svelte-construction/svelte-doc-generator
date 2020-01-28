@@ -24,7 +24,12 @@ export default class Variable extends Base<VariableSpace.Config> {
 
   public value: any;
 
-  public asPlaceholder: boolean = false;
+  public asPlaceholder: boolean;
+
+  public defaults = {
+    value: false,
+    asPlaceholder: false
+  };
 
   public get name(): string {
     if (!this._name) {

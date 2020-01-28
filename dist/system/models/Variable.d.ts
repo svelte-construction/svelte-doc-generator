@@ -10,6 +10,10 @@ export default class Variable extends Base<VariableSpace.Config> {
     private _name;
     value: any;
     asPlaceholder: boolean;
+    defaults: {
+        value: boolean;
+        asPlaceholder: boolean;
+    };
     get name(): string;
     set name(value: string);
 }

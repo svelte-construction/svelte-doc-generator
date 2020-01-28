@@ -7,7 +7,6 @@ import Variable from '../models/Variable';
 import Attribute from '../models/Attribute';
 import encodeSpecialChars from '../helpers/encodeSpecialChars';
 import generateUniqueIdentifier from '../helpers/generateUniqueIdentifier';
-import create from '../helpers/create';
 
 export namespace BasePartialSpace {
   export type Config = {
@@ -67,8 +66,8 @@ export default abstract class BasePartial<C> extends SvelteSource<BasePartialSpa
 
   public generate(variables: Variable[] = [], attributes: Attribute[] = []): BasePartialSpace.Generated {
     const source = encodeSpecialChars(this.code);
-    const sourceVariable = create(Variable).configure({ value: source });
-    const sourceAttribute = create(Attribute).configure({ name: 'source', value: sourceVariable });
+    const sourceVariable = new Variable({ value: source });
+    const sourceAttribute = new Attribute({ name: 'source', value: sourceVariable });
     const tag = this.generateTag([...attributes, sourceAttribute]);
 
     return {
