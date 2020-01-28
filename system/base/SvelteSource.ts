@@ -15,7 +15,12 @@ export default abstract class SvelteSource<C> extends Source<SvelteComponentSpac
 
   public get tree(): Ast {
     if (!this._tree) {
-      this._tree = parse(this.source);
+      try {
+        this._tree = parse(this.source);
+      } catch(error) {
+        error.message = `Unable to parse svelte component '${this.path}' with an error '${error.message}'`;
+        throw error;
+      }
     }
 
     return this._tree;
