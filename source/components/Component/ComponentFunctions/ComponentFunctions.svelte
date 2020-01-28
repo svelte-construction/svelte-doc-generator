@@ -1,7 +1,7 @@
 <script>
   import { createEventDispatcher } from 'svelte';
   import MarkdownIt from 'markdown-it';
-  import ComponentDefinitions from './../ComponentDefinitions'
+  import ComponentProperties from './../ComponentProperties'
 
   const dispatch = createEventDispatcher();
   const md = new MarkdownIt;
@@ -29,7 +29,7 @@
 </style>
 
 <div class="component-functions">
-  <ComponentDefinitions title="Exported functions" visible={sorted.length}>
+  <ComponentProperties title="Exported functions" visible={sorted.length}>
     <div class="content">
         <table class="table table-bordered">
           <thead>
@@ -46,7 +46,7 @@
               <tr>
                 <td scope="row">
                   <kbd>{item.name}</kbd>
-                  (<a href="#" on:click={onClickDefinition} data-line={item.location.start.line}>declaration</a>)
+                  (<a href="#" on:click={onClickDefinition} data-line={item.location.start.line}>definitions</a>)
                 </td>
                 <td>
                   {#each item.arguments as argument}
@@ -60,5 +60,5 @@
           </tbody>
         </table>
       </div>
-  </ComponentDefinitions>
+  </ComponentProperties>
 </div>

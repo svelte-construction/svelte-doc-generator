@@ -17,9 +17,8 @@ export default class Generator extends Base<GeneratorSpace.Config> {
     package: Package;
     directory: string;
     documentation: Documentation;
-    variables: Variable[];
-    get indexPath(): string;
-    get documentationPath(): string;
+    get pathToIndex(): string;
+    get pathToDocumentation(): string;
+    get variables(): Variable[];
     generate(): void;
-    index(): void;
 }

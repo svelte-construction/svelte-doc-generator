@@ -25,7 +25,7 @@
 
 </style>
 
-<div class="application-source">
+<div class="bootstrap application-source">
   <div class="overlay" on:click={onCloseClick} />
 
   <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document" style="display: block;">

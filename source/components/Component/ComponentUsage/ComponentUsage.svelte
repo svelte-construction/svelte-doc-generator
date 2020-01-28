@@ -23,7 +23,7 @@
 </style>
 
 <section class="component-usage">
-  <div class="title">{title} {@html badgeCompiled}</div>
+  <div class="title bootstrap">{title} {@html badgeCompiled}</div>
 
   <div class="content">
     <div class="preview theme_{theme}" class:with-padding={padding} class:with-overflow={overflow}>
@@ -31,7 +31,7 @@
     </div>
 
     {#if decoded}
-      <div class="source">
+      <div class="source bootstrap">
         <Source source={decoded} />
       </div>
     {/if}

@@ -2,14 +2,14 @@ import { Script as SvelteScript, TemplateNode, Var } from 'svelte/types/compiler
 import SvelteSource from '../base/SvelteSource';
 import InlineComponent from 'svelte/types/compiler/compile/nodes/InlineComponent';
 import AttributeNode from 'svelte/types/compiler/compile/nodes/Attribute';
-import Documentation from '../models/Documentation';
 import Variable from '../models/Variable';
 import Attribute from '../models/Attribute';
+import encodeSpecialChars from '../helpers/encodeSpecialChars';
+import generateUniqueIdentifier from '../helpers/generateUniqueIdentifier';
 
 export namespace BasePartialSpace {
   export type Config = {
     node: InlineComponent;
-    documentation: Documentation;
   }
 
   export type Generated = {
@@ -22,9 +22,17 @@ export default abstract class BasePartial<C> extends SvelteSource<BasePartialSpa
 
   public static alias: string;
 
+  private _id: string;
+
   public node: InlineComponent;
 
-  public documentation: Documentation;
+  public get id(): string {
+    if (!this._id) {
+      this._id = generateUniqueIdentifier('${id}');
+    }
+
+    return this._id;
+  }
 
   public get start() {
     return this.node.start;
@@ -33,6 +41,10 @@ export default abstract class BasePartial<C> extends SvelteSource<BasePartialSpa
   public get end() {
     return this.node.end;
   }
+
+  public static get tag(): string {
+    throw new ReferenceError('Not implemented');
+  };
 
   public get code(): string {
     if (!this.node.children.length) {
@@ -44,14 +56,31 @@ export default abstract class BasePartial<C> extends SvelteSource<BasePartialSpa
     return this.source.substr(start, end - start);
   }
 
-  public generate(): BasePartialSpace.Generated {
+  public get content(): string {
+    return this.code;
+  }
+
+  public get slot(): string | undefined {
+    return undefined;
+  }
+
+  public generate(variables: Variable[] = [], attributes: Attribute[] = []): BasePartialSpace.Generated {
+    const source = encodeSpecialChars(this.code);
+    const sourceVariable = new Variable({ value: source });
+    const sourceAttribute = new Attribute({ name: 'source', value: sourceVariable });
+    const tag = this.generateTag([...attributes, sourceAttribute]);
+
     return {
-      variables: [],
-      code: this.tag(this.code)
+      variables: [...variables, sourceVariable],
+      code: this.slot ? this.generateSlot(tag) : tag
     };
   }
 
-  public tag(content: string = '', customAttributes: Attribute[] = []): string {
+  public generateSlot(content: string): string {
+    return `<div slot="${this.slot}">${content}</div>`;
+  }
+
+  public generateTag(customAttributes: Attribute[] = []): string {
     const sourceAttributesCompiled = this.node.attributes
       .map((attribute) => this.extractNativeAttribute(attribute.name));
     const customAttributesCompiled = customAttributes
@@ -62,8 +91,8 @@ export default abstract class BasePartial<C> extends SvelteSource<BasePartialSpa
       ...customAttributesCompiled
     ].join(' ');
 
-    return content
-      ? `<${this.node.name} ${attributesString}>${content}</${this.node.name}>`
+    return this.content
+      ? `<${this.node.name} ${attributesString}>${this.content}</${this.node.name}>`
       : `<${this.node.name} ${attributesString} />`;
   }
 
@@ -82,9 +111,9 @@ export default abstract class BasePartial<C> extends SvelteSource<BasePartialSpa
       .find((attribute) => attribute.name === name);
   }
 
-  public getNativeAttributeAsString(name: string) {
+  public getNativeAttributeAsString(name: string): string {
     const attribute = this.getNativeAttribute(name) as any;
     return attribute && attribute.value && attribute.value.length
-      ? attribute.value[0].data : undefined;
+      ? attribute.value[0].data : '';
   }
 }

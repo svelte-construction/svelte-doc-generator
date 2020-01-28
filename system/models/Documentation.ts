@@ -1,16 +1,15 @@
 import Component from './Component';
 import SvelteSource from '../base/SvelteSource';
-import { Ast, Script, TemplateNode } from 'svelte/types/compiler/interfaces';
+import { TemplateNode } from 'svelte/types/compiler/interfaces';
 import Package from './Package';
-import { ImportDeclaration } from 'estree';
-import Import from '../imports/Import';
-import NamespaceImport from '../imports/NamespaceImport';
-import DefaultImport from '../imports/DefaultImport';
 import UsagePartial from '../partials/UsagePartial';
 import MainPartial from '../partials/MainPartial';
 import InlineComponent from 'svelte/types/compiler/compile/nodes/InlineComponent';
 import { PartialClassType, PartialType } from '../types/PartialType';
 import Variable from './Variable';
+import Script from './Script';
+import DescriptionPartial from '../partials/DescriptionPartial';
+import { IMPORT_SPECIFIER_TO_MODEL } from "../constants";
 
 export namespace DocumentationSpace {
   export type Config = {
@@ -19,21 +18,15 @@ export namespace DocumentationSpace {
   }
 }
 
-const importsMap = {
-  ImportSpecifier: Import,
-  ImportDefaultSpecifier: DefaultImport,
-  ImportNamespaceSpecifier: NamespaceImport
-};
-
 export default class Documentation extends SvelteSource<DocumentationSpace.Config> {
 
   public package: Package;
 
   public component: Component;
 
-  public get title(): string | undefined {
+  public get title(): string {
     if (!this.main) {
-      return undefined;
+      return '';
     }
 
     return this.main
@@ -41,16 +34,21 @@ export default class Documentation extends SvelteSource<DocumentationSpace.Confi
   }
 
   public get main(): MainPartial | undefined {
-    return Documentation.resolveTagNode(this, MainPartial);
+    return this.findPartial(MainPartial, MainPartial.tag);
+  }
+
+  public get description(): DescriptionPartial | undefined {
+    return this.findPartial(DescriptionPartial, DescriptionPartial.tag);
   }
 
   public get usages(): UsagePartial[] {
-    return Documentation.resolveTagNodes(this, UsagePartial);
+    return this.findPartials(UsagePartial, UsagePartial.tag);
   }
 
   public get partials(): PartialType[] {
     const partials = [];
     this.main && partials.push(this.main);
+    this.description && partials.push(this.description);
     return [...partials, ...this.usages];
   }
 
@@ -63,13 +61,89 @@ export default class Documentation extends SvelteSource<DocumentationSpace.Confi
   }
 
   public define(variables: Variable[]) {
-    const definitions = variables
+    const variablesClone = [...variables];
+
+    // sort variables by placeholders goes first
+    variablesClone.sort((left, right) => {
+      if (left.asPlaceholder && right.asPlaceholder) {
+        return 0;
+      } else if (left.asPlaceholder) {
+        return -1;
+      } else if (right.asPlaceholder) {
+        return 1;
+      }
+
+      return 0;
+    });
+
+    // merge variables with the same names
+    const variablesHash = variablesClone.reduce((stack: { [key: string]: Variable }, variable) => {
+      if (stack[variable.name]) { // if variable with the same name already exists
+        if (!stack[variable.name].asPlaceholder) {
+          throw new Error(`Variable with name '${variable.name} already exists in the hash`);
+        }
+      }
+
+      stack[variable.name] = variable;
+      return stack;
+    }, {});
+
+    // create variables definitions string
+    const definitions = Object.values(variablesHash)
       .map((variable) => `const ${variable.name} = ${JSON.stringify(variable.value)};`);
+
+    // append definitions to the first script
     this.source = this.source
       .replace(/(<script[^>]*>)/, `$1\n  ${definitions.join('\n  ')}`);
   }
 
-  private static findComponentByTagsInHtml(node: TemplateNode, aliases: string[]): InlineComponent[] {
+  private findPartials(partial: PartialClassType, tag: string): PartialType[] {
+    const aliases = this.resolveTagAliases(tag);
+    const nodes = Documentation.findInlineComponentByTagAliases(this.tree.html, aliases);
+    return nodes.map((node) => new partial({ path: this.path, node }));
+  }
+
+  private findPartial(partial: PartialClassType, tag: string): PartialType | undefined {
+    const partials = this.findPartials(partial, tag);
+
+    if (partials.length > 1) {
+      throw new Error(`There should be only one declaration component usage inside the documentation file (${this.path})`);
+    } else if (!partials.length) {
+      return undefined;
+    }
+
+    return partials[0];
+  }
+
+  private resolveTagAliases(tag: string): string[] {
+    const moduleTags = this.resolveTagAliasesFromScript(this.module, tag);
+    const instanceTags = this.resolveTagAliasesFromScript(this.instance, tag);
+    return [...moduleTags, ...instanceTags];
+  }
+
+  private resolveTagAliasesFromScript(script: Script, tag: string): string[] {
+    if (!script) {
+      return [];
+    }
+
+    const path = tag.split('.');
+    const selfImportDeclarations = script.imports
+      .filter((node) => node.source.value === this.package.name);
+
+    let aliases: string[] = [];
+    for (const selfImportDeclaration of selfImportDeclarations) {
+      for (const specifier of selfImportDeclaration.specifiers) {
+        const model = IMPORT_SPECIFIER_TO_MODEL[specifier.type];
+        const instance = new model({ script, specifier: specifier as any });
+        aliases = [...aliases, ...instance.resolveTags(path)];
+      }
+    }
+
+    return aliases;
+  }
+
+
+  private static findInlineComponentByTagAliases(node: TemplateNode, aliases: string[]): InlineComponent[] {
     if (!aliases.length) {
       return [];
     }
@@ -81,61 +155,12 @@ export default class Documentation extends SvelteSource<DocumentationSpace.Confi
     if (node.children) {
       let nodes: InlineComponent[] = [];
       for (const child of node.children) {
-        nodes = [...nodes, ...Documentation.findComponentByTagsInHtml(child, aliases)];
+        nodes = [...nodes, ...Documentation.findInlineComponentByTagAliases(child, aliases)];
       }
 
       return nodes;
     }
 
     return [];
-  }
-
-  private static resolveTags(that: Package, tree: Ast, name: string): string[] {
-    const namePath = name.split('.');
-    const moduleTags = Documentation.resolveTagsFromScript(that, tree.module, namePath);
-    const instanceTags = Documentation.resolveTagsFromScript(that, tree.instance, namePath);
-    return [...moduleTags, ...instanceTags];
-  }
-
-  private static resolveTagsFromScript(that: Package, script: Script, namePath: string[]): string[] {
-    const importDeclarations = this.resolveRelativeImportsFromScript(script);
-    const selfImportDeclarations = importDeclarations.filter((node) => node.source.value === that.name);
-
-    let tags: string[] = [];
-    for (const selfImportDeclaration of selfImportDeclarations) {
-      for (const specifier of selfImportDeclaration.specifiers) {
-        const model = importsMap[specifier.type];
-        const instance = new model({ script, specifier: specifier as any });
-        tags = [...tags, ...instance.resolveTags(namePath)];
-      }
-    }
-
-    return tags;
-  }
-
-  private static resolveRelativeImportsFromScript(script: Script): ImportDeclaration[] {
-    if (!script) {
-      return [];
-    }
-
-    return script.content.body.filter((node) => node.type === 'ImportDeclaration') as ImportDeclaration[];
-  }
-
-  private static resolveTagNodes(documentation: Documentation, partial: PartialClassType): PartialType[] {
-    const tags = Documentation.resolveTags(documentation.package, documentation.tree, partial.alias);
-    const nodes = Documentation.findComponentByTagsInHtml(documentation.tree.html, tags);
-    return nodes.map((node) => new partial({ path: documentation.path, node, documentation: documentation }));
-  }
-
-  private static resolveTagNode(documentation: Documentation, partial: PartialClassType): PartialType | undefined {
-    const partials = Documentation.resolveTagNodes(documentation, partial);
-
-    if (partials.length > 1) {
-      throw new Error(`There should be only one declaration component usage inside the documentation file (${documentation.path})`);
-    } else if (!partials.length) {
-      return undefined;
-    }
-
-    return partials[0];
   }
 }

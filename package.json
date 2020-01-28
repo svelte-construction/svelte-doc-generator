@@ -1,7 +1,7 @@
 {
   "type": "module",
   "name": "svelte-doc-generator",
-  "version": "1.1.4",
+  "version": "1.1.6",
   "description": "",
   "scripts": {
     "check": "./node_modules/.bin/tsc --noEmit",
@@ -10,8 +10,7 @@
     "system:build": "npm run build:types && npm run build:js",
     "system:build:types": "./node_modules/.bin/tsc --emitDeclarationOnly",
     "system:build:js": "babel system --out-dir dist/system --extensions ',.ts,.tsx' --source-maps inline",
-    "source:watch": "./node_modules/.bin/webpack --watch --mode development",
-    "source:build": "./node_modules/.bin/webpack --mode production"
+    "compile-bootstrap": "./node_modules/.bin/gulp compile-bootstrap"
   },
   "repository": {
     "type": "git",
@@ -40,11 +39,18 @@
     "@types/md5": "^2.1.33",
     "@types/node": "^13.5.0",
     "@types/yargs": "^15.0.1",
+    "autoprefixer": "^9.7.4",
+    "babel-runtime": "^6.26.0",
     "cssnano": "^4.1.10",
     "estree-walker": "^1.0.1",
     "file-loader": "^5.0.2",
     "fs": "0.0.1-security",
     "fs-extra": "^8.1.0",
+    "gulp": "^4.0.2",
+    "gulp-insert": "^0.5.0",
+    "gulp-postcss": "^8.0.0",
+    "gulp-replace": "^1.0.0",
+    "gulp-sass": "^4.0.2",
     "magic-string": "^0.25.6",
     "periscopic": "^2.0.2",
     "postcss": "^7.0.18",
@@ -56,8 +62,10 @@
     "postcss-import": "^12.0.1",
     "postcss-loader": "^3.0.0",
     "postcss-mixins": "^6.2.2",
+    "postcss-namespace": "^1.1.1",
     "postcss-nested": "^4.1.2",
     "postcss-preset-env": "^6.6.0",
+    "postcss-selector-namespace": "^3.0.1",
     "postcss-simple-vars": "^5.0.2",
     "typescript": "^3.7.5"
   },

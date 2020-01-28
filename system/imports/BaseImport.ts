@@ -1,4 +1,4 @@
-import Base from '../base/Base';
+import Base  from '../base/Base';
 import {
   BaseModuleSpecifier, Identifier,
   ImportDefaultSpecifier,
@@ -8,7 +8,10 @@ import {
   Node, MemberExpression
 } from 'estree';
 import Source from '../base/Source';
-import { Script } from 'svelte/types/compiler/interfaces';
+import Import from "./Import";
+import DefaultImport from "./DefaultImport";
+import NamespaceImport from "./NamespaceImport";
+import Script from "../models/Script";
 
 export namespace BaseImportSpace {
   export type Config = {
@@ -17,7 +20,7 @@ export namespace BaseImportSpace {
   };
 }
 
-export default abstract class BaseImport<C> extends Base<BaseImportSpace.Config & C> {
+export default abstract class BaseImport<C> extends Base<BaseImportSpace.Config & C>{
 
   public script: Script;
 
@@ -29,7 +32,7 @@ export default abstract class BaseImport<C> extends Base<BaseImportSpace.Config 
     const path = [name, ...inner];
     let tags = [path.join('.')];
 
-    const declarations = this.script.content.body
+    const declarations = this.script.data.content.body
       .filter((node) => node.type === 'VariableDeclaration') as VariableDeclaration[];
 
     for (const declaration of declarations) {

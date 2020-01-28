@@ -8,11 +8,11 @@
 
   export let title;
   export let type = 'instance';
-  export let declarations = {};
+  export let variables;
+  export let functions;
+  export let classes;
   export let start;
   export let end;
-
-  const { variables, functions, classes } = declarations;
 
   function onSourceClick({ detail }) {
     const { line } = detail;

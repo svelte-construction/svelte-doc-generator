@@ -1,25 +1,27 @@
-import { Declaration, ExportNamedDeclaration, Node } from 'estree';
-import { Script as SvelteScript, Var } from 'svelte/types/compiler/interfaces';
-import Base from '../base/Base';
+import { Declaration, ExportNamedDeclaration, ImportDeclaration, Node } from 'estree';
+import { Script as SvelteScript } from 'svelte/types/compiler/interfaces';
 import FunctionExport, { FunctionExportSpace } from '../exports/FunctionExport';
 import VariableExport, { VariableExportSpace } from '../exports/VariableExport';
 import ClassExport, { ClassExportSpace } from '../exports/ClassExport';
 import { ExportType } from '../types/ExportType';
-import { BaseExportSpace } from '../exports/BaseExport';
 import { ExportResultType } from '../types/ExportResultType';
 import SvelteSource from '../base/SvelteSource';
-import Component from './Component';
-import { SourceSpace } from '../base/Source';
+import Source, { SourceSpace } from '../base/Source';
+import Base from "../base/Base";
+import encodeSpecialChars from "../helpers/encodeSpecialChars";
 
 export namespace ScriptSpace {
   export type Config = {
     data: SvelteScript;
   }
 
-  export type Declarations = {
+  export type Definition = {
+    code: string;
     variables: { [key: string]: VariableExportSpace.Result; };
     functions: { [key: string]: FunctionExportSpace.Result; };
     classes: { [key: string]: ClassExportSpace.Result; };
+    start: SourceSpace.Position;
+    end: SourceSpace.Position;
   }
 }
 
@@ -29,7 +31,7 @@ const declarationsToModels = {
   ClassDeclaration: ClassExport
 };
 
-export default class Script extends Base<ScriptSpace.Config> {
+export default class Script extends Source<ScriptSpace.Config> {
 
   public data: SvelteScript;
 
@@ -50,6 +52,10 @@ export default class Script extends Base<ScriptSpace.Config> {
     });
   }
 
+  public get imports(): ImportDeclaration[] {
+    return this.data.content.body.filter((node) => node.type === 'ImportDeclaration') as ImportDeclaration[];
+  }
+
   public get variables(): VariableExport[] {
     return Script.filterExports(this.exports, VariableExport) as VariableExport[];
   }
@@ -62,11 +68,26 @@ export default class Script extends Base<ScriptSpace.Config> {
     return Script.filterExports(this.exports, ClassExport) as ClassExport[];
   }
 
-  get declarations(): ScriptSpace.Declarations {
+  public get start(): SourceSpace.Position {
+    return this.getPosition(this.data.start);
+  }
+
+  public get end(): SourceSpace.Position {
+    return this.getPosition(this.data.end);
+  }
+
+  public get code(): string {
+    return this.source.substr(this.data.start, this.data.end - this.data.start);
+  }
+
+  get definition(): ScriptSpace.Definition {
     return {
+      code: encodeSpecialChars(this.code),
       variables: Script.collectExports(this.variables) as { [key: string]: VariableExportSpace.Result; },
       functions: Script.collectExports(this.functions) as { [key: string]: FunctionExportSpace.Result; },
       classes: Script.collectExports(this.classes) as { [key: string]: ClassExportSpace.Result; },
+      start: this.start,
+      end: this.end,
     };
   }
 

@@ -4,33 +4,31 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const SvelteSource_1 = __importDefault(require("../base/SvelteSource"));
-const Import_1 = __importDefault(require("../imports/Import"));
-const NamespaceImport_1 = __importDefault(require("../imports/NamespaceImport"));
-const DefaultImport_1 = __importDefault(require("../imports/DefaultImport"));
 const UsagePartial_1 = __importDefault(require("../partials/UsagePartial"));
 const MainPartial_1 = __importDefault(require("../partials/MainPartial"));
-const importsMap = {
-    ImportSpecifier: Import_1.default,
-    ImportDefaultSpecifier: DefaultImport_1.default,
-    ImportNamespaceSpecifier: NamespaceImport_1.default
-};
+const DescriptionPartial_1 = __importDefault(require("../partials/DescriptionPartial"));
+const constants_1 = require("../constants");
 class Documentation extends SvelteSource_1.default {
     get title() {
         if (!this.main) {
-            return undefined;
+            return '';
         }
         return this.main
             .getNativeAttributeAsString('title');
     }
     get main() {
-        return Documentation.resolveTagNode(this, MainPartial_1.default);
+        return this.findPartial(MainPartial_1.default, MainPartial_1.default.tag);
+    }
+    get description() {
+        return this.findPartial(DescriptionPartial_1.default, DescriptionPartial_1.default.tag);
     }
     get usages() {
-        return Documentation.resolveTagNodes(this, UsagePartial_1.default);
+        return this.findPartials(UsagePartial_1.default, UsagePartial_1.default.tag);
     }
     get partials() {
         const partials = [];
         this.main && partials.push(this.main);
+        this.description && partials.push(this.description);
         return [...partials, ...this.usages];
     }
     apply(replacement) {
@@ -41,12 +39,75 @@ class Documentation extends SvelteSource_1.default {
         return variables;
     }
     define(variables) {
-        const definitions = variables
+        const variablesClone = [...variables];
+        // sort variables by placeholders goes first
+        variablesClone.sort((left, right) => {
+            if (left.asPlaceholder && right.asPlaceholder) {
+                return 0;
+            }
+            else if (left.asPlaceholder) {
+                return -1;
+            }
+            else if (right.asPlaceholder) {
+                return 1;
+            }
+            return 0;
+        });
+        // merge variables with the same names
+        const variablesHash = variablesClone.reduce((stack, variable) => {
+            if (stack[variable.name]) { // if variable with the same name already exists
+                if (!stack[variable.name].asPlaceholder) {
+                    throw new Error(`Variable with name '${variable.name} already exists in the hash`);
+                }
+            }
+            stack[variable.name] = variable;
+            return stack;
+        }, {});
+        // create variables definitions string
+        const definitions = Object.values(variablesHash)
             .map((variable) => `const ${variable.name} = ${JSON.stringify(variable.value)};`);
+        // append definitions to the first script
         this.source = this.source
             .replace(/(<script[^>]*>)/, `$1\n  ${definitions.join('\n  ')}`);
     }
-    static findComponentByTagsInHtml(node, aliases) {
+    findPartials(partial, tag) {
+        const aliases = this.resolveTagAliases(tag);
+        const nodes = Documentation.findInlineComponentByTagAliases(this.tree.html, aliases);
+        return nodes.map((node) => new partial({ path: this.path, node }));
+    }
+    findPartial(partial, tag) {
+        const partials = this.findPartials(partial, tag);
+        if (partials.length > 1) {
+            throw new Error(`There should be only one declaration component usage inside the documentation file (${this.path})`);
+        }
+        else if (!partials.length) {
+            return undefined;
+        }
+        return partials[0];
+    }
+    resolveTagAliases(tag) {
+        const moduleTags = this.resolveTagAliasesFromScript(this.module, tag);
+        const instanceTags = this.resolveTagAliasesFromScript(this.instance, tag);
+        return [...moduleTags, ...instanceTags];
+    }
+    resolveTagAliasesFromScript(script, tag) {
+        if (!script) {
+            return [];
+        }
+        const path = tag.split('.');
+        const selfImportDeclarations = script.imports
+            .filter((node) => node.source.value === this.package.name);
+        let aliases = [];
+        for (const selfImportDeclaration of selfImportDeclarations) {
+            for (const specifier of selfImportDeclaration.specifiers) {
+                const model = constants_1.IMPORT_SPECIFIER_TO_MODEL[specifier.type];
+                const instance = new model({ script, specifier: specifier });
+                aliases = [...aliases, ...instance.resolveTags(path)];
+            }
+        }
+        return aliases;
+    }
+    static findInlineComponentByTagAliases(node, aliases) {
         if (!aliases.length) {
             return [];
         }
@@ -56,51 +117,11 @@ class Documentation extends SvelteSource_1.default {
         if (node.children) {
             let nodes = [];
             for (const child of node.children) {
-                nodes = [...nodes, ...Documentation.findComponentByTagsInHtml(child, aliases)];
+                nodes = [...nodes, ...Documentation.findInlineComponentByTagAliases(child, aliases)];
             }
             return nodes;
         }
         return [];
-    }
-    static resolveTags(that, tree, name) {
-        const namePath = name.split('.');
-        const moduleTags = Documentation.resolveTagsFromScript(that, tree.module, namePath);
-        const instanceTags = Documentation.resolveTagsFromScript(that, tree.instance, namePath);
-        return [...moduleTags, ...instanceTags];
-    }
-    static resolveTagsFromScript(that, script, namePath) {
-        const importDeclarations = this.resolveRelativeImportsFromScript(script);
-        const selfImportDeclarations = importDeclarations.filter((node) => node.source.value === that.name);
-        let tags = [];
-        for (const selfImportDeclaration of selfImportDeclarations) {
-            for (const specifier of selfImportDeclaration.specifiers) {
-                const model = importsMap[specifier.type];
-                const instance = new model({ script, specifier: specifier });
-                tags = [...tags, ...instance.resolveTags(namePath)];
-            }
-        }
-        return tags;
-    }
-    static resolveRelativeImportsFromScript(script) {
-        if (!script) {
-            return [];
-        }
-        return script.content.body.filter((node) => node.type === 'ImportDeclaration');
-    }
-    static resolveTagNodes(documentation, partial) {
-        const tags = Documentation.resolveTags(documentation.package, documentation.tree, partial.alias);
-        const nodes = Documentation.findComponentByTagsInHtml(documentation.tree.html, tags);
-        return nodes.map((node) => new partial({ path: documentation.path, node, documentation: documentation }));
-    }
-    static resolveTagNode(documentation, partial) {
-        const partials = Documentation.resolveTagNodes(documentation, partial);
-        if (partials.length > 1) {
-            throw new Error(`There should be only one declaration component usage inside the documentation file (${documentation.path})`);
-        }
-        else if (!partials.length) {
-            return undefined;
-        }
-        return partials[0];
     }
 }
 exports.default = Documentation;

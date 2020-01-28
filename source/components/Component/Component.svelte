@@ -1,21 +1,29 @@
 <script>
   import decodeSpecialChars from './../../helpers/decodeSpecialChars';
-  import ComponentDeclaration from './ComponentDeclaration';
+  import ComponentDefinition from './ComponentDefinition';
+  import ComponentDescription from './ComponentDescription';
   import ComponentUsages from './ComponentUsages';
+  import ComponentInitialization from './ComponentInitialization';
   import { source as sourceStore, line as lineStore } from './../../stores';
 
   export let title = 'Component';
-  export let source;
-  export let declaration;
+  export let raw;
+  export let definition;
+  export let initialization;
+  export let badge;
 
-  const withDeclaration = !!declaration;
-  const withDescription = !!$$props.$$slots.description;
-  const withUsages = !!$$props.$$slots.usages;
+  const withDefinition = !!definition;
+  const withInitialization = !!initialization;
+  const withDescription = !!($$props.$$slots && $$props.$$slots.description);
+  const withUsages = !!($$props.$$slots && $$props.$$slots.usages);
+  const witContent = withDefinition || withInitialization || withUsages;
 
   function onSource({ detail }) {
-    $sourceStore = decodeSpecialChars(source);
+    $sourceStore = decodeSpecialChars(raw);
     $lineStore = detail.line;
   }
+
+  $: badgeCompiled = badge ? `<span class="badge badge-secondary badge-dark">${badge}</span>` : '';
 </script>
 
 <style src="./styles.pcss">
@@ -23,38 +31,39 @@
 </style>
 
 <section class="component">
-  <div class="title">{title}</div>
+  <div class="bootstrap">
+    <div class="title">{title} {@html badgeCompiled}</div>
 
-  {#if withDescription}
-    <div class="description">
-      <slot name="description" />
-    </div>
-  {/if}
-
-  <br/>
-  <br/>
-  <hr/>
+    {#if withDescription}
+      <div class="description">
+        <ComponentDescription>
+          <slot name="description" />
+        </ComponentDescription>
+      </div>
+    {/if}
+  </div>
 
   <div class="content">
-
     {#if withUsages}
-      <div class="usages">
+      <div class="brick usages">
         <ComponentUsages>
           <slot name="usages" />
         </ComponentUsages>
       </div>
     {/if}
 
-    {#if withUsages && withDeclaration}
-      <br/>
-      <br/>
-      <hr/>
-    {/if}
+    <div class="brick bootstrap">
+      {#if withInitialization}
+        <div class="initialization">
+          <ComponentInitialization {...initialization} />
+        </div>
+      {/if}
 
-    {#if withDeclaration}
-      <div class="declaration">
-        <ComponentDeclaration {...declaration} on:source={onSource} />
-      </div>
-    {/if}
+      {#if withDefinition}
+        <div class="brick definition">
+          <ComponentDefinition {...definition} on:source={onSource} />
+        </div>
+      {/if}
+    </div>
   </div>
 </section>

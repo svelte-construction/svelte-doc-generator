@@ -1,14 +1,11 @@
 import * as path from 'path';
 import Base from '../base/Base';
-import { parse } from 'svelte/compiler';
-import { Ast } from 'svelte/types/compiler/interfaces';
-import SourceInterface from '../interfaces/SourceInterface';
 import * as fs from 'fs';
 import DOMParser from 'dom-parser';
 
 export namespace SourceSpace {
   export type Config = {
-    path?: string;
+    path: string;
   }
 
   export type Position = {
@@ -17,7 +14,7 @@ export namespace SourceSpace {
   }
 }
 
-export default abstract class Source<C> extends Base<SourceSpace.Config & C> implements SourceInterface {
+export default abstract class Source<C> extends Base<SourceSpace.Config & C> {
 
   private _path: string;
 

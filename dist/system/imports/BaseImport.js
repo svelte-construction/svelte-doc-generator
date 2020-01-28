@@ -8,7 +8,7 @@ class BaseImport extends Base_1.default {
     resolveTagReplacements(name, inner) {
         const path = [name, ...inner];
         let tags = [path.join('.')];
-        const declarations = this.script.content.body
+        const declarations = this.script.data.content.body
             .filter((node) => node.type === 'VariableDeclaration');
         for (const declaration of declarations) {
             for (const declarator of declaration.declarations) {
