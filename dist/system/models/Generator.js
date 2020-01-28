@@ -15,44 +15,56 @@ const path = __importStar(require("path"));
 const Documentation_1 = __importDefault(require("./Documentation"));
 const Base_1 = __importDefault(require("../base/Base"));
 const resolveRelativeImports_1 = __importDefault(require("../helpers/resolveRelativeImports"));
+const Variable_1 = __importDefault(require("./Variable"));
+const constants_1 = require("../constants");
+const encodeSpecialChars_1 = __importDefault(require("../helpers/encodeSpecialChars"));
 class Generator extends Base_1.default {
     constructor() {
         super(...arguments);
         this.fileNameIndex = 'index.js';
         this.fileNameDocumentation = 'Documentation.svelte';
-        this.variables = [];
     }
-    get indexPath() {
+    get pathToIndex() {
         return path.resolve(this.directory, this.fileNameIndex);
     }
-    get documentationPath() {
+    get pathToDocumentation() {
         return path.resolve(this.directory, this.fileNameDocumentation);
+    }
+    get variables() {
+        const variables = [];
+        // retrieve documentation variables
+        const raw = encodeSpecialChars_1.default(this.documentation.component.source);
+        const definition = this.documentation.component.definition;
+        const initialization = this.documentation.instance.definition;
+        // create variables
+        variables.push(new Variable_1.default({ name: constants_1.DOCUMENTATION_VARIABLE_RAW, value: raw }));
+        variables.push(new Variable_1.default({ name: constants_1.DOCUMENTATION_VARIABLE_DEFINITION, value: definition }));
+        variables.push(new Variable_1.default({ name: constants_1.DOCUMENTATION_VARIABLE_INITIALIZATION, value: initialization }));
+        return variables;
     }
     generate() {
         // reset target documentation file if exists
-        fs.writeFileSync(this.documentationPath, this.documentation.source);
+        fs.writeFileSync(this.pathToDocumentation, this.documentation.source);
         // create documentation clone from cloned file
-        const path = this.documentationPath;
+        const path = this.pathToDocumentation;
         const that = this.documentation.package;
         const component = this.documentation.component;
         const clone = new Documentation_1.default({ path, package: that, component });
         // rebind all imports paths and update the file
-        clone.source = resolveRelativeImports_1.default(clone.source, this.documentation.path, this.documentationPath);
+        clone.source = resolveRelativeImports_1.default(clone.source, this.documentation.path, this.pathToDocumentation);
         // replace all partials
         // with generated source code
         // and process variables
+        let globalVariables = this.variables;
         for (let i = 0; i < clone.partials.length; i++) {
-            const variables = clone.apply(clone.partials[i]);
-            this.variables = [...this.variables, ...variables];
+            const partialVariables = clone.apply(clone.partials[i]);
+            globalVariables = [...globalVariables, ...partialVariables];
         }
         // define variables inside the documentation
-        clone.define(this.variables);
+        clone.define(globalVariables);
         // generate index file
-        this.index();
-    }
-    index() {
         const content = `import Component from './${this.fileNameDocumentation}';\n\nexport default Component;`;
-        fs.writeFileSync(this.indexPath, content);
+        fs.writeFileSync(this.pathToIndex, content);
     }
 }
 exports.default = Generator;

@@ -3,5 +3,5 @@ export declare namespace UsagePartialSpace {
     type Config = {};
 }
 export default class UsagePartial extends BasePartial<UsagePartialSpace.Config> {
-    static get alias(): string;
+    static get tag(): string;
 }

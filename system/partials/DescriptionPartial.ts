@@ -9,7 +9,7 @@ export namespace DescriptionPartialSpace {
 
 export default class DescriptionPartial extends BasePartial<DescriptionPartialSpace.Config> {
 
-  public static get alias(): string {
+  public static get tag(): string {
     return 'Component.Description';
   }
 }

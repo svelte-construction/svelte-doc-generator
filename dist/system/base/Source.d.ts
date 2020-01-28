@@ -2,7 +2,7 @@ import Base from '../base/Base';
 import DOMParser from 'dom-parser';
 export declare namespace SourceSpace {
     type Config = {
-        path?: string;
+        path: string;
     };
     type Position = {
         line: number;

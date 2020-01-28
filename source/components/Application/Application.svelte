@@ -22,7 +22,7 @@
 
 <Router>
   <div class="documentation">
-    <aside class="menu">
+    <aside class="bootstrap menu">
       <nav>
         <ul use:links class="menu__content">
           {#each menu as { path, label } (path)}

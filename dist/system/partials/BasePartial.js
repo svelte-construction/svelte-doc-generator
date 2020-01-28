@@ -21,6 +21,10 @@ class BasePartial extends SvelteSource_1.default {
     get end() {
         return this.node.end;
     }
+    static get tag() {
+        throw new ReferenceError('Not implemented');
+    }
+    ;
     get code() {
         if (!this.node.children.length) {
             return '';

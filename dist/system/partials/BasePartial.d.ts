@@ -1,13 +1,11 @@
 import SvelteSource from '../base/SvelteSource';
 import InlineComponent from 'svelte/types/compiler/compile/nodes/InlineComponent';
 import AttributeNode from 'svelte/types/compiler/compile/nodes/Attribute';
-import Documentation from '../models/Documentation';
 import Variable from '../models/Variable';
 import Attribute from '../models/Attribute';
 export declare namespace BasePartialSpace {
     type Config = {
         node: InlineComponent;
-        documentation: Documentation;
     };
     type Generated = {
         variables: Variable[];
@@ -18,10 +16,10 @@ export default abstract class BasePartial<C> extends SvelteSource<BasePartialSpa
     static alias: string;
     private _id;
     node: InlineComponent;
-    documentation: Documentation;
     get id(): string;
     get start(): number;
     get end(): number;
+    static get tag(): string;
     get code(): string;
     get content(): string;
     get slot(): string | undefined;

@@ -2,7 +2,7 @@
   import ComponentContext from '../ComponentContext';
   import isDeclarationContext from './../../../helpers/isDeclarationContext';
 
-  export let title = 'Component declaration';
+  export let title = 'Component definitions';
   export let module;
   export let instance;
 </script>

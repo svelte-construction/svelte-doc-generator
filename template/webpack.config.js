@@ -54,6 +54,10 @@ const config = (isProduction, defaultConfig) => ({
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader']
       },
       {
+        test: /\.less$/,
+        loader: 'less-loader',
+      },
+      {
         loader: 'file-loader',
         test: [
           /\.svg$/,

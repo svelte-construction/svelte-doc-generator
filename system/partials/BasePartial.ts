@@ -2,7 +2,6 @@ import { Script as SvelteScript, TemplateNode, Var } from 'svelte/types/compiler
 import SvelteSource from '../base/SvelteSource';
 import InlineComponent from 'svelte/types/compiler/compile/nodes/InlineComponent';
 import AttributeNode from 'svelte/types/compiler/compile/nodes/Attribute';
-import Documentation from '../models/Documentation';
 import Variable from '../models/Variable';
 import Attribute from '../models/Attribute';
 import encodeSpecialChars from '../helpers/encodeSpecialChars';
@@ -11,7 +10,6 @@ import generateUniqueIdentifier from '../helpers/generateUniqueIdentifier';
 export namespace BasePartialSpace {
   export type Config = {
     node: InlineComponent;
-    documentation: Documentation;
   }
 
   export type Generated = {
@@ -28,8 +26,6 @@ export default abstract class BasePartial<C> extends SvelteSource<BasePartialSpa
 
   public node: InlineComponent;
 
-  public documentation: Documentation;
-
   public get id(): string {
     if (!this._id) {
       this._id = generateUniqueIdentifier('${id}');
@@ -45,6 +41,10 @@ export default abstract class BasePartial<C> extends SvelteSource<BasePartialSpa
   public get end() {
     return this.node.end;
   }
+
+  public static get tag(): string {
+    throw new ReferenceError('Not implemented');
+  };
 
   public get code(): string {
     if (!this.node.children.length) {

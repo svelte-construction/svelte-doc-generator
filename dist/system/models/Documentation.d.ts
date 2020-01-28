@@ -1,6 +1,5 @@
 import Component from './Component';
 import SvelteSource from '../base/SvelteSource';
-import { Script } from 'svelte/types/compiler/interfaces';
 import Package from './Package';
 import UsagePartial from '../partials/UsagePartial';
 import MainPartial from '../partials/MainPartial';
@@ -17,18 +16,15 @@ export default class Documentation extends SvelteSource<DocumentationSpace.Confi
     package: Package;
     component: Component;
     get title(): string;
-    get module(): Script;
-    get instance(): Script;
     get main(): MainPartial | undefined;
     get description(): DescriptionPartial | undefined;
     get usages(): UsagePartial[];
     get partials(): PartialType[];
     apply(replacement: PartialType): Variable[];
     define(variables: Variable[]): void;
-    private static findComponentByTagsInHtml;
-    private static resolveTags;
-    private static resolveTagsFromScript;
-    private static resolveRelativeImportsFromScript;
-    private static resolveTagNodes;
-    private static resolveTagNode;
+    private findPartials;
+    private findPartial;
+    private resolveTagAliases;
+    private resolveTagAliasesFromScript;
+    private static findInlineComponentByTagAliases;
 }

@@ -1,5 +1,5 @@
 <script>
-  import ComponentDefinitions from './../ComponentDefinitions';
+  import ComponentProperties from './../ComponentProperties';
 
   export let data = {};
 
@@ -11,7 +11,7 @@
 </style>
 
 <div class="component-classes">
-  <ComponentDefinitions title="Exported classes" {visible}>
+  <ComponentProperties title="Exported classes" {visible}>
 
-  </ComponentDefinitions>
+  </ComponentProperties>
 </div>

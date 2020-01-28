@@ -1,6 +1,6 @@
 import Base from '../base/Base';
 import { BaseModuleSpecifier, Property, MemberExpression } from 'estree';
-import { Script } from 'svelte/types/compiler/interfaces';
+import Script from "../models/Script";
 export declare namespace BaseImportSpace {
     type Config = {
         script: Script;

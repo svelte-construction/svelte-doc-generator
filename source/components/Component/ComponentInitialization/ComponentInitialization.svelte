@@ -1,7 +1,11 @@
 <script>
   import Source from './../../Source';
+  import decodeSpecialChars from './../../../helpers/decodeSpecialChars';
 
-  export let source;
+  export let title = 'Component initialization';
+  export let code = false;
+
+  $: decoded = code && decodeSpecialChars(code);
 </script>
 
 <style src="./styles.pcss">
@@ -9,5 +13,14 @@
 </style>
 
 <section class="component-initialization">
-  <Source {source} lang="javascript" />
+  <div class="title">{title}</div>
+  <br/>
+
+  {#if decoded}
+    <Source source={decoded} lang="html" />
+  {:else}
+    <div class="alert alert-secondary" role="alert">
+      There is no component initialization.
+    </div>
+  {/if}
 </section>

@@ -20,7 +20,7 @@
 
 </style>
 
-<div class="code">
+<div class="bootstrap code">
   <div class="numbers">
     {#each lines as {indent, source}, index}
       <div class="number" class:active={isActiveLine(index)}>{index + 1}</div>

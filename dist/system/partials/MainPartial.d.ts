@@ -5,6 +5,6 @@ export declare namespace MainPartialSpace {
     type Config = {};
 }
 export default class MainPartial extends BasePartial<MainPartialSpace.Config> {
-    static get alias(): string;
+    static get tag(): string;
     generate(variables?: Variable[], attributes?: Attribute[], withContent?: boolean): BasePartialSpace.Generated;
 }

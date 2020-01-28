@@ -1,5 +1,5 @@
 <script>
-  import ComponentDefinitions from './../ComponentDefinitions';
+  import ComponentProperties from './../ComponentProperties';
   import ComponentVariablesTable from './ComponentVariablesTable';
 
   export let data = {};
@@ -15,7 +15,7 @@
 </style>
 
 <div class="component-variables">
-  <ComponentDefinitions title="Exported variables" visible={constants.length || changable.length}>
+  <ComponentProperties title="Exported variables" visible={constants.length || changable.length}>
     {#if constants.length}
       <ComponentVariablesTable type="const" title="Constants" data={constants} on:source />
     {/if}
@@ -27,5 +27,5 @@
     {#if changable.length}
       <ComponentVariablesTable type="let" title="Changable" data={changable} on:source />
     {/if}
-  </ComponentDefinitions>
+  </ComponentProperties>
 </div>

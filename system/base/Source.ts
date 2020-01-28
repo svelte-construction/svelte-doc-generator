@@ -5,7 +5,7 @@ import DOMParser from 'dom-parser';
 
 export namespace SourceSpace {
   export type Config = {
-    path?: string;
+    path: string;
   }
 
   export type Position = {

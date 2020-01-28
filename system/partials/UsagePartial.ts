@@ -6,7 +6,7 @@ export namespace UsagePartialSpace {
 
 export default class UsagePartial extends BasePartial<UsagePartialSpace.Config> {
 
-  public static get alias(): string {
+  public static get tag(): string {
     return 'Component.Usage';
   }
 }

@@ -3,7 +3,11 @@
 </style>
 
 <section class="component-usages">
-  <div class="title">Component usages</div>
+  <div class="title bootstrap">Component usages</div>
 
-  <slot />
+  <slot>
+    <div class="alert alert-secondary" role="alert">
+      There is no component usages.
+    </div>
+  </slot>
 </section>

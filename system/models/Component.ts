@@ -8,37 +8,20 @@ export namespace ComponentSpace {
     path: string;
   }
 
-  export type ScripResult = {
-    declarations: ScriptSpace.Declarations;
-    start: SourceSpace.Position;
-    end: SourceSpace.Position;
-  }
-
   export type Result = {
-    module: ScripResult | undefined;
-    instance: ScripResult | undefined;
+    module: ScriptSpace.Definition | undefined;
+    instance: ScriptSpace.Definition | undefined;
   }
 }
 
 export default class Component extends SvelteSource<ComponentSpace.Config> {
 
-  public get result(): ComponentSpace.Result {
+  public get definition(): ComponentSpace.Result {
     return {
-      module: this.getScriptResult(this.tree.module),
-      instance: this.getScriptResult(this.tree.instance)
-    };
-  }
-
-  protected getScriptResult(script: SvelteScript): ComponentSpace.ScripResult | undefined {
-    if (!script) {
-      return undefined;
-    }
-
-    const module = new Script({ data: script });
-    return {
-      declarations: module.declarations,
-      start: this.getPosition(script.start),
-      end: this.getPosition(script.end)
+      module: this.module
+        ? this.module.definition : undefined,
+      instance: this.instance
+        ? this.instance.definition : undefined
     };
   }
 }
