@@ -40,7 +40,8 @@ class Documentation extends SvelteSource_1.default {
     get partials() {
         const partials = [];
         this.main && partials.push(this.main);
-        this.initialization && partials.push(this.initialization);
+        // TODO Implement initialization code
+        // this.initialization && partials.push(this.initialization);
         this.description && partials.push(this.description);
         return [...partials, ...this.usages];
     }

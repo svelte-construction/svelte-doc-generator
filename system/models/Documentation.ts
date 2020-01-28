@@ -63,7 +63,8 @@ export default class Documentation extends SvelteSource<DocumentationSpace.Confi
   public get partials(): PartialType[] {
     const partials = [];
     this.main && partials.push(this.main);
-    this.initialization && partials.push(this.initialization);
+    // TODO Implement initialization code
+    // this.initialization && partials.push(this.initialization);
     this.description && partials.push(this.description);
     return [...partials, ...this.usages];
   }
