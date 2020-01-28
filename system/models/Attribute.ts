@@ -8,7 +8,7 @@ import { ExportType } from '../types/ExportType';
 import { BaseExportSpace } from '../exports/BaseExport';
 import { ExportResultType } from '../types/ExportResultType';
 import { ScriptSpace } from './Script';
-import resolveUniqueVariableName from '../helpers/resolveUniqueVariableName';
+import generateUniqueIdentifier from '../helpers/generateUniqueIdentifier';
 import Variable from './Variable';
 
 export namespace AttributeSpace {

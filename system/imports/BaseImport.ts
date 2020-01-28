@@ -1,4 +1,4 @@
-import Base from '../base/Base';
+import Base  from '../base/Base';
 import {
   BaseModuleSpecifier, Identifier,
   ImportDefaultSpecifier,
@@ -17,7 +17,7 @@ export namespace BaseImportSpace {
   };
 }
 
-export default abstract class BaseImport<C> extends Base<BaseImportSpace.Config & C> {
+export default abstract class BaseImport<C> extends Base<BaseImportSpace.Config & C>{
 
   public script: Script;
 

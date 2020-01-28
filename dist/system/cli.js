@@ -18,8 +18,9 @@ const watch_1 = __importDefault(require("./cli/watch"));
 const setup_1 = __importDefault(require("./cli/setup"));
 const constants_1 = require("./constants");
 const Package_1 = __importDefault(require("./models/Package"));
+const create_1 = __importDefault(require("./helpers/create"));
 const pathToPackage = path.resolve(constants_1.PATH_ROOT, 'package.json');
-const that = new Package_1.default({ path: pathToPackage });
+const that = create_1.default(Package_1.default).configure({ path: pathToPackage });
 // display description
 commander_1.default
     .version(that.version)

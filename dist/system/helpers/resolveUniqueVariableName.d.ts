@@ -1,1 +1,1 @@
-export default function resolveUniqueVariableName(prefix?: string): string;
+export default function resolveUniqueVariableName(template?: string): string;

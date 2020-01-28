@@ -16,6 +16,7 @@ import displayCommandGreetings from '../helpers/displayCommandGreetings';
 import displayCommandStep from '../helpers/displayCommandStep';
 import displayCommandDone from '../helpers/displayCommandDone';
 import createEmptyDirectory from '../helpers/createEmptyDirectory';
+import create from '../helpers/create';
 
 export default function generate(program: Command) {
   program
@@ -37,7 +38,7 @@ export default function generate(program: Command) {
 
 
       // create package instance
-      const that = new Package({ path: pathToPackage });
+      const that = create(Package).configure({ path: pathToPackage });
 
       // create empty directory for the library
       createEmptyDirectory(pathToTarget);
@@ -86,9 +87,9 @@ export default function generate(program: Command) {
         }
 
         // generate component documentation
-        const component = new Component({ path: pathToComponent });
-        const documentation = new Documentation({ path: pathToDocumentationSource, package: that, component });
-        const generator = new Generator({ name, directory: pathToDocumentationTargetDirectory, package: that, documentation });
+        const component = create(Component).configure({ path: pathToComponent });
+        const documentation = create(Documentation).configure({ path: pathToDocumentationSource, package: that, component });
+        const generator = create(Generator).configure({ name, directory: pathToDocumentationTargetDirectory, package: that, documentation });
         generator.generate();
         generated.push(generator);
 
@@ -99,7 +100,7 @@ export default function generate(program: Command) {
       const pathToTargetIndex = path.resolve(pathToTarget, 'index.js');
       displayCommandStep(cmd, `Generate index inside ${colors.italic(pathToTargetIndex)}...`);
       const items = resolveIndexFromGenerators(generated);
-      const dictionary = new Dictionary({ path: pathToTargetIndex, items });
+      const dictionary = create(Dictionary).configure({ path: pathToTargetIndex, items });
       dictionary.generate();
 
       displayCommandStep(cmd, colors.green(`Successfully generated for ${generated.length} components inside ${colors.italic(pathToTarget)}`));

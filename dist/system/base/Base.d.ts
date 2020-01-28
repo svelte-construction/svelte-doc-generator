@@ -1,4 +1,3 @@
-export default class Base<C> {
-    constructor(config: C);
-    configure(config: C): void;
+export default class Base<C> extends Object {
+    configure(config: C): this;
 }

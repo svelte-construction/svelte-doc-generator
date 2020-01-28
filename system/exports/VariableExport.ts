@@ -10,6 +10,7 @@ import {
 } from 'estree';
 import Description from '../models/Description';
 import Location, { LocationSpace } from '../models/Location';
+import create from '../helpers/create';
 
 export namespace VariableExportSpace {
   export type Config = {};
@@ -58,7 +59,7 @@ export default class VariableExport extends BaseExport<VariableExportSpace.Confi
       return undefined;
     }
 
-    return new Description({ comments: this.data.leadingComments });
+    return create(Description).configure({ comments: this.data.leadingComments });
   }
 
   public get note(): Description | undefined {
@@ -66,7 +67,7 @@ export default class VariableExport extends BaseExport<VariableExportSpace.Confi
       return undefined;
     }
 
-    return new Description({ comments: this.data.trailingComments });
+    return create(Description).configure({ comments: this.data.trailingComments });
   }
 
   public get result(): VariableExportSpace.Result {

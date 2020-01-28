@@ -14,6 +14,7 @@ import Documentation from './Documentation';
 import Base from '../base/Base';
 import resolveRelativeImports from '../helpers/resolveRelativeImports';
 import Variable from './Variable';
+import create from '../helpers/create';
 
 export namespace GeneratorSpace {
   export type Config = {
@@ -55,7 +56,7 @@ export default class Generator extends Base<GeneratorSpace.Config> {
     const path = this.documentationPath;
     const that = this.documentation.package;
     const component = this.documentation.component;
-    const clone = new Documentation({ path, package: that, component });
+    const clone = create(Documentation).configure({ path, package: that, component });
 
     // rebind all imports paths and update the file
     clone.source = resolveRelativeImports(clone.source, this.documentation.path, this.documentationPath);

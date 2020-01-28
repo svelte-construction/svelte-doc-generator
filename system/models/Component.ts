@@ -2,6 +2,7 @@ import Script, { ScriptSpace } from './Script';
 import SvelteSource from '../base/SvelteSource';
 import { SourceSpace } from '../base/Source';
 import { Script as SvelteScript } from 'svelte/types/compiler/interfaces';
+import create from '../helpers/create';
 
 export namespace ComponentSpace {
   export type Config = {
@@ -34,7 +35,7 @@ export default class Component extends SvelteSource<ComponentSpace.Config> {
       return undefined;
     }
 
-    const module = new Script({ data: script });
+    const module = create(Script).configure({ data: script });
     return {
       declarations: module.declarations,
       start: this.getPosition(script.start),

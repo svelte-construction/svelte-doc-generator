@@ -1,9 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-class Base {
-    constructor(config) {
-        this.configure(config);
-    }
+class Base extends Object {
     configure(config) {
         if (config) {
             for (const name in config) {
@@ -12,6 +9,7 @@ class Base {
                 }
             }
         }
+        return this;
     }
 }
 exports.default = Base;

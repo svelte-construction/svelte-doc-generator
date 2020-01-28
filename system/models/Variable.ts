@@ -8,11 +8,13 @@ import { ExportType } from '../types/ExportType';
 import { BaseExportSpace } from '../exports/BaseExport';
 import { ExportResultType } from '../types/ExportResultType';
 import { ScriptSpace } from './Script';
-import resolveUniqueVariableName from '../helpers/resolveUniqueVariableName';
+import generateUniqueIdentifier from '../helpers/generateUniqueIdentifier';
 
 export namespace VariableSpace {
   export type Config = {
+    name?: string;
     value: any;
+    asPlaceholder?: boolean;
   }
 }
 
@@ -22,11 +24,17 @@ export default class Variable extends Base<VariableSpace.Config> {
 
   public value: any;
 
+  public asPlaceholder: boolean = false;
+
   public get name(): string {
     if (!this._name) {
-      this._name = resolveUniqueVariableName();
+      this._name = generateUniqueIdentifier('var${id}');
     }
 
     return this._name;
+  }
+
+  public set name(value: string) {
+    this._name = value;
   }
 }

@@ -19,6 +19,7 @@ const constants_1 = require("../constants");
 const displayCommandGreetings_1 = __importDefault(require("../helpers/displayCommandGreetings"));
 const displayCommandStep_1 = __importDefault(require("../helpers/displayCommandStep"));
 const child_process_1 = require("child_process");
+const create_1 = __importDefault(require("../helpers/create"));
 function trigger(cmd, pathToCli, pathToLibrary, pathToTarget, show = false) {
     try {
         const command = `node ${pathToCli} generate --library ${pathToLibrary} --target ${pathToTarget}`;
@@ -47,7 +48,7 @@ function watch(program) {
         displayCommandStep_1.default(cmd, `${colors_1.default.bold('Path to watch changes in')}: ${colors_1.default.italic(pathToLibrary)}`);
         displayCommandStep_1.default(cmd, `${colors_1.default.bold('Path to the target library documentation')}: ${colors_1.default.italic(pathToTarget)}`);
         // create package instance
-        const that = new Package_1.default({ path: pathToPackage });
+        const that = create_1.default(Package_1.default).configure({ path: pathToPackage });
         // resolve path to the cli tool
         const pathToCli = path.resolve(constants_1.PATH_ROOT, that.cli);
         if (!fs.existsSync(pathToCli)) {

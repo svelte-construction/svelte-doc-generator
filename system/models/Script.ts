@@ -10,6 +10,7 @@ import { ExportResultType } from '../types/ExportResultType';
 import SvelteSource from '../base/SvelteSource';
 import Component from './Component';
 import { SourceSpace } from '../base/Source';
+import create from '../helpers/create';
 
 export namespace ScriptSpace {
   export type Config = {
@@ -46,7 +47,7 @@ export default class Script extends Base<ScriptSpace.Config> {
     return filtered.map((node): ExportType => {
       const declaration = node.declaration as Declaration;
       const model = declarationsToModels[declaration.type];
-      return new model({ data: node });
+      return create(model).configure({ data: node });
     });
   }
 

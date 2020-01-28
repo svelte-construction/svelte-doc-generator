@@ -4,26 +4,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const BasePartial_1 = __importDefault(require("./BasePartial"));
-const encodeSpecialChars_1 = __importDefault(require("../helpers/encodeSpecialChars"));
 const Variable_1 = __importDefault(require("../models/Variable"));
 const Attribute_1 = __importDefault(require("../models/Attribute"));
+const constants_1 = require("../constants");
+const create_1 = __importDefault(require("../helpers/create"));
 class MainPartial extends BasePartial_1.default {
     static get alias() {
         return 'Component';
     }
-    generate() {
-        const source = encodeSpecialChars_1.default(this.documentation.component.source);
+    generate(variables = [], attributes = [], withContent = true) {
+        // use global name to pass initialization attribute to the component
+        const initializationVariable = create_1.default(Variable_1.default).configure({ name: constants_1.DOCUMENTATION_VARIABLE_INITIALIZATION, value: undefined, asPlaceholder: true });
+        const initializationAttribute = create_1.default(Attribute_1.default).configure({ name: 'initialization', value: initializationVariable });
         const declaration = this.documentation.component.result;
-        const sourceVariable = new Variable_1.default({ value: source });
-        const declarationVariable = new Variable_1.default({ value: declaration });
-        const attributes = [
-            new Attribute_1.default({ name: 'source', value: sourceVariable }),
-            new Attribute_1.default({ name: 'declaration', value: declarationVariable }),
-        ];
-        return {
-            variables: [sourceVariable, declarationVariable],
-            code: this.tag(this.code, attributes)
-        };
+        const declarationVariable = create_1.default(Variable_1.default).configure({ value: declaration });
+        const declarationAttribute = create_1.default(Attribute_1.default).configure({ name: 'declaration', value: declarationVariable });
+        return super.generate([...variables, initializationVariable, declarationVariable], [...attributes, initializationAttribute, declarationAttribute]);
     }
 }
 exports.default = MainPartial;

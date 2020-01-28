@@ -11,6 +11,10 @@ import MainPartial from '../partials/MainPartial';
 import InlineComponent from 'svelte/types/compiler/compile/nodes/InlineComponent';
 import { PartialClassType, PartialType } from '../types/PartialType';
 import Variable from './Variable';
+import DescriptionPartial from '../partials/DescriptionPartial';
+import InitializationPartial from '../partials/InitializationPartial';
+import create from '../helpers/create';
+import { ImportType } from '../types/ImportType';
 
 export namespace DocumentationSpace {
   export type Config = {
@@ -31,9 +35,9 @@ export default class Documentation extends SvelteSource<DocumentationSpace.Confi
 
   public component: Component;
 
-  public get title(): string | undefined {
+  public get title(): string {
     if (!this.main) {
-      return undefined;
+      return '';
     }
 
     return this.main
@@ -44,6 +48,14 @@ export default class Documentation extends SvelteSource<DocumentationSpace.Confi
     return Documentation.resolveTagNode(this, MainPartial);
   }
 
+  public get initialization(): MainPartial | undefined {
+    return create(InitializationPartial).configure({  });
+  }
+
+  public get description(): DescriptionPartial | undefined {
+    return Documentation.resolveTagNode(this, DescriptionPartial);
+  }
+
   public get usages(): UsagePartial[] {
     return Documentation.resolveTagNodes(this, UsagePartial);
   }
@@ -51,6 +63,8 @@ export default class Documentation extends SvelteSource<DocumentationSpace.Confi
   public get partials(): PartialType[] {
     const partials = [];
     this.main && partials.push(this.main);
+    this.initialization && partials.push(this.initialization);
+    this.description && partials.push(this.description);
     return [...partials, ...this.usages];
   }
 
@@ -63,8 +77,38 @@ export default class Documentation extends SvelteSource<DocumentationSpace.Confi
   }
 
   public define(variables: Variable[]) {
-    const definitions = variables
+    const variablesClone = [...variables];
+
+    // sort variables by placeholders goes first
+    variablesClone.sort((left, right) => {
+      if (left.asPlaceholder && right.asPlaceholder) {
+        return 0;
+      } else if (left.asPlaceholder) {
+        return -1;
+      } else if (right.asPlaceholder) {
+        return 1;
+      }
+
+      return 0;
+    });
+
+    // merge variables with the same names
+    const variablesHash = variablesClone.reduce((stack: { [key: string]: Variable }, variable) => {
+      if (stack[variable.name]) { // if variable with the same name already exists
+        if (!stack[variable.name].asPlaceholder) {
+          throw new Error(`Variable with name '${variable.name} already exists in the hash`);
+        }
+      }
+
+      stack[variable.name] = variable;
+      return stack;
+    }, {});
+
+    // create variables definitions string
+    const definitions = Object.values(variablesHash)
       .map((variable) => `const ${variable.name} = ${JSON.stringify(variable.value)};`);
+
+    // append definitions to the first script
     this.source = this.source
       .replace(/(<script[^>]*>)/, `$1\n  ${definitions.join('\n  ')}`);
   }
@@ -104,8 +148,8 @@ export default class Documentation extends SvelteSource<DocumentationSpace.Confi
     let tags: string[] = [];
     for (const selfImportDeclaration of selfImportDeclarations) {
       for (const specifier of selfImportDeclaration.specifiers) {
-        const model = importsMap[specifier.type];
-        const instance = new model({ script, specifier: specifier as any });
+        const model = (importsMap[specifier.type] as any) as ImportType;
+        const instance = create(model).configure({ script, specifier: specifier as any });
         tags = [...tags, ...instance.resolveTags(namePath)];
       }
     }
@@ -124,7 +168,7 @@ export default class Documentation extends SvelteSource<DocumentationSpace.Confi
   private static resolveTagNodes(documentation: Documentation, partial: PartialClassType): PartialType[] {
     const tags = Documentation.resolveTags(documentation.package, documentation.tree, partial.alias);
     const nodes = Documentation.findComponentByTagsInHtml(documentation.tree.html, tags);
-    return nodes.map((node) => new partial({ path: documentation.path, node, documentation: documentation }));
+    return nodes.map((node) => create(partial).configure({ path: documentation.path, node, documentation: documentation }));
   }
 
   private static resolveTagNode(documentation: Documentation, partial: PartialClassType): PartialType | undefined {

@@ -7,6 +7,7 @@ const Base_1 = __importDefault(require("../base/Base"));
 const FunctionExport_1 = __importDefault(require("../exports/FunctionExport"));
 const VariableExport_1 = __importDefault(require("../exports/VariableExport"));
 const ClassExport_1 = __importDefault(require("../exports/ClassExport"));
+const create_1 = __importDefault(require("../helpers/create"));
 const declarationsToModels = {
     VariableDeclaration: VariableExport_1.default,
     FunctionDeclaration: FunctionExport_1.default,
@@ -23,7 +24,7 @@ class Script extends Base_1.default {
         return filtered.map((node) => {
             const declaration = node.declaration;
             const model = declarationsToModels[declaration.type];
-            return new model({ data: node });
+            return create_1.default(model).configure({ data: node });
         });
     }
     get variables() {

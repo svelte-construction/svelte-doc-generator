@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const comment_parser_1 = __importDefault(require("comment-parser"));
 const BaseExport_1 = __importDefault(require("./BaseExport"));
 const Description_1 = __importDefault(require("../models/Description"));
+const create_1 = __importDefault(require("../helpers/create"));
 class FunctionExport extends BaseExport_1.default {
     get declaration() {
         return this.data.declaration;
@@ -41,11 +42,11 @@ class FunctionExport extends BaseExport_1.default {
             if (!this.data.leadingComments) {
                 return false;
             }
-            return new Description_1.default({ comments: this.data.leadingComments });
+            return create_1.default(Description_1.default).configure({ comments: this.data.leadingComments });
         }
         const content = this.jsdoc.description;
         const data = { type: 'Block', value: content };
-        return new Description_1.default({ comments: [data] });
+        return create_1.default(Description_1.default).configure({ comments: [data] });
     }
     get tags() {
         if (!this.jsdoc) {

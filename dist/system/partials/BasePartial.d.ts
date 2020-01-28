@@ -16,14 +16,19 @@ export declare namespace BasePartialSpace {
 }
 export default abstract class BasePartial<C> extends SvelteSource<BasePartialSpace.Config & C> {
     static alias: string;
+    private _id;
     node: InlineComponent;
     documentation: Documentation;
+    get id(): string;
     get start(): number;
     get end(): number;
     get code(): string;
-    generate(): BasePartialSpace.Generated;
-    tag(content?: string, customAttributes?: Attribute[]): string;
+    get content(): string;
+    get slot(): string | undefined;
+    generate(variables?: Variable[], attributes?: Attribute[]): BasePartialSpace.Generated;
+    generateSlot(content: string): string;
+    generateTag(customAttributes?: Attribute[]): string;
     extractNativeAttribute(name: string): string | undefined;
     getNativeAttribute(name: string): AttributeNode | undefined;
-    getNativeAttributeAsString(name: string): any;
+    getNativeAttributeAsString(name: string): string;
 }

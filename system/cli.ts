@@ -7,9 +7,10 @@ import watch from './cli/watch';
 import setup from './cli/setup';
 import { PATH_ROOT } from './constants';
 import Package from './models/Package';
+import create from './helpers/create';
 
 const pathToPackage = path.resolve(PATH_ROOT, 'package.json');
-const that = new Package({ path: pathToPackage });
+const that = create(Package).configure({ path: pathToPackage });
 
 // display description
 program

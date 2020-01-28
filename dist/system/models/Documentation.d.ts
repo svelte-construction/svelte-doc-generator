@@ -5,6 +5,7 @@ import UsagePartial from '../partials/UsagePartial';
 import MainPartial from '../partials/MainPartial';
 import { PartialType } from '../types/PartialType';
 import Variable from './Variable';
+import DescriptionPartial from '../partials/DescriptionPartial';
 export declare namespace DocumentationSpace {
     type Config = {
         package: Package;
@@ -14,8 +15,10 @@ export declare namespace DocumentationSpace {
 export default class Documentation extends SvelteSource<DocumentationSpace.Config> {
     package: Package;
     component: Component;
-    get title(): string | undefined;
+    get title(): string;
     get main(): MainPartial | undefined;
+    get initialization(): MainPartial | undefined;
+    get description(): DescriptionPartial | undefined;
     get usages(): UsagePartial[];
     get partials(): PartialType[];
     apply(replacement: PartialType): Variable[];

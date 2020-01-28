@@ -1,10 +1,6 @@
-export default class Base<C> {
+export default class Base<C> extends Object {
 
-  public constructor(config: C) {
-    this.configure(config);
-  }
-
-  public configure(config: C): void {
+  public configure(config: C): this {
     if (config) {
       for (const name in config) {
         if (typeof config[name] !== 'undefined') {
@@ -12,5 +8,7 @@ export default class Base<C> {
         }
       }
     }
+
+    return this;
   }
 };

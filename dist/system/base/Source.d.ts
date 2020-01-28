@@ -1,5 +1,4 @@
 import Base from '../base/Base';
-import SourceInterface from '../interfaces/SourceInterface';
 import DOMParser from 'dom-parser';
 export declare namespace SourceSpace {
     type Config = {
@@ -10,7 +9,7 @@ export declare namespace SourceSpace {
         column: number;
     };
 }
-export default abstract class Source<C> extends Base<SourceSpace.Config & C> implements SourceInterface {
+export default abstract class Source<C> extends Base<SourceSpace.Config & C> {
     private _path;
     private _source?;
     private _dom?;

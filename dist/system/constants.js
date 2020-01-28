@@ -16,5 +16,6 @@ exports.PATH_ROOT = resolvePackagePath_1.default(__dirname);
 exports.PATH_TEMPLATE = path.resolve(exports.PATH_ROOT, 'template');
 exports.DOCUMENTATION_PATH_SUFFIX = 'Documentation';
 exports.DOCUMENTATION_PATH_EXTENSION = 'svelte';
+exports.DOCUMENTATION_VARIABLE_INITIALIZATION = 'initialization';
 exports.WATCH_DELAY = 1000;
 exports.WATCH_TEMPLATES = ['/**/*'];
