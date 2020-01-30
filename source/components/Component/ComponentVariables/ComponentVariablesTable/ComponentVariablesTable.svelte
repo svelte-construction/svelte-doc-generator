@@ -39,7 +39,7 @@
           <tr>
             <td scope="row">
               <kbd>{item.name}</kbd>
-              (<a href="#" on:click={onClickDefinition} data-line={item.location.start.line}>definitions</a>)
+              (<a href="/" on:click={onClickDefinition} data-line={item.location.start.line}>definitions</a>)
             </td>
             <td><code>{typeof item.default}</code></td>
             <td><code>{JSON.stringify(item.default)}</code></td>

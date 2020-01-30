@@ -3,8 +3,8 @@
   import { resolveMenuFromLibrary } from 'svelte-doc-generator/helpers';
   import ComponentPage from './pages/ComponentPage.svelte';
   import DefaultPage from './pages/DefaultPage.svelte';
-  import library from './library';
   import { URI_TO_COMPONENTS } from './constants';
+  import library from './context';
 
   const menu = [
     { path: '/', label: 'Home' },

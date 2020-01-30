@@ -4,10 +4,12 @@
   "main": "index.js",
   "private": true,
   "scripts": {
-    "start": "node ./node_modules/webpack-dev-server/.bin/webpack-dev-server.js --mode development",
-    "build": "node ./node_modules/webpack/.bin/webpack.js --mode production",
-    "docs:generate": "node ./node_modules/.bin/svelte-doc-generator generate --library ./src/components --target ./site/library",
-    "docs:watch": "node ./node_modules/.bin/svelte-doc-generator watch --library ./src/components --target ./site/library"
+    "start": "npm run docs:generate && npm run webpack:start",
+    "build": "npm run docs:generate && npm run webpack:build",
+    "webpack:start": "node ./node_modules/.bin/webpack-dev-server --mode development",
+    "webpack:build": "node ./node_modules/.bin/webpack --mode production",
+    "docs:watch": "node ./node_modules/.bin/svelte-doc-generator watch --library ./src/components --target ./site/library",
+    "docs:generate": "node ./node_modules/.bin/svelte-doc-generator generate --library ./src/components --target ./site/library"
   },
   "author": "Ivan",
   "license": "ISC",
