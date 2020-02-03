@@ -1,6 +1,6 @@
 import BasePartial from './BasePartial';
 
-export namespace UsagePartialSpace {
+export declare namespace UsagePartialSpace {
   export type Config = {}
 }
 

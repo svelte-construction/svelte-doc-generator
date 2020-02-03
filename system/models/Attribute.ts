@@ -11,7 +11,7 @@ import { ScriptSpace } from './Script';
 import generateUniqueIdentifier from '../helpers/generateUniqueIdentifier';
 import Variable from './Variable';
 
-export namespace AttributeSpace {
+export declare namespace AttributeSpace {
   export type Config = {
     name: string;
     value: any;

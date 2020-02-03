@@ -10,7 +10,7 @@ import Source, { SourceSpace } from '../base/Source';
 import Base from "../base/Base";
 import encodeSpecialChars from "../helpers/encodeSpecialChars";
 
-export namespace ScriptSpace {
+export declare namespace ScriptSpace {
   export type Config = {
     data: SvelteScript;
   }

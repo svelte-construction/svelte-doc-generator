@@ -1,4 +1,4 @@
-import colors from 'colors/safe';
+import colors from 'colors';
 import { Command } from 'commander';
 
 export default function displayCommandGreetings(cmd: Command) {

@@ -2,7 +2,7 @@ import * as fs from 'fs-extra';
 import Source from '../base/Source';
 import { ItemType } from '../types/ItemType';
 
-export namespace RouterSpace {
+export declare namespace RouterSpace {
   export type Config = {
     routes: ItemType[];
   }

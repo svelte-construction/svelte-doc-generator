@@ -2,7 +2,7 @@ import Base from '../base/Base';
 import { Declaration, ExportNamedDeclaration, Literal, Node, SourceLocation } from 'estree';
 import Location from '../models/Location';
 
-export namespace BaseExportSpace {
+export declare namespace BaseExportSpace {
   export type Config = {
     data: ExportNamedDeclaration;
   }

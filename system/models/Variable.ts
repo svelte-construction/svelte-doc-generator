@@ -10,7 +10,7 @@ import { ExportResultType } from '../types/ExportResultType';
 import { ScriptSpace } from './Script';
 import generateUniqueIdentifier from '../helpers/generateUniqueIdentifier';
 
-export namespace VariableSpace {
+export declare namespace VariableSpace {
   export type Config = {
     name?: string;
     value: any;

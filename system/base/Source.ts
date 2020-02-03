@@ -3,7 +3,7 @@ import Base from '../base/Base';
 import * as fs from 'fs';
 import DOMParser from 'dom-parser';
 
-export namespace SourceSpace {
+export declare namespace SourceSpace {
   export type Config = {
     path: string;
   }

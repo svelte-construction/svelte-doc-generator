@@ -3,7 +3,7 @@ import { ClassDeclaration, ExportNamedDeclaration, Node } from 'estree';
 import BaseExport, { BaseExportSpace } from './BaseExport';
 import { FunctionExportSpace } from './FunctionExport';
 
-export namespace ClassExportSpace {
+export declare namespace ClassExportSpace {
   export type Config = {};
 
   export type Result = {};

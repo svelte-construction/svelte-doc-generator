@@ -2,7 +2,7 @@ import Base from '../base/Base';
 import { ClassDeclaration, ImportDefaultSpecifier, ImportNamespaceSpecifier, ImportSpecifier } from 'estree';
 import BaseImport from './BaseImport';
 
-export namespace DefaultImportSpace {
+export declare namespace DefaultImportSpace {
   export type Config = {
     specifier: ImportDefaultSpecifier;
   };

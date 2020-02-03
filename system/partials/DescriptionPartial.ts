@@ -3,7 +3,7 @@ import encodeSpecialChars from '../helpers/encodeSpecialChars';
 import Variable from '../models/Variable';
 import Attribute from '../models/Attribute';
 
-export namespace DescriptionPartialSpace {
+export declare namespace DescriptionPartialSpace {
   export type Config = {}
 }
 

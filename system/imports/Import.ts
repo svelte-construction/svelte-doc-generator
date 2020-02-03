@@ -2,7 +2,7 @@ import Base from '../base/Base';
 import { ImportSpecifier } from 'estree';
 import BaseImport from './BaseImport';
 
-export namespace ImportSpace {
+export declare namespace ImportSpace {
   export type Config = {
     specifier: ImportSpecifier;
   };

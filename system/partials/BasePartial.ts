@@ -7,7 +7,7 @@ import Attribute from '../models/Attribute';
 import encodeSpecialChars from '../helpers/encodeSpecialChars';
 import generateUniqueIdentifier from '../helpers/generateUniqueIdentifier';
 
-export namespace BasePartialSpace {
+export declare namespace BasePartialSpace {
   export type Config = {
     node: InlineComponent;
   }

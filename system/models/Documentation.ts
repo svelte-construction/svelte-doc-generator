@@ -11,7 +11,7 @@ import Script from './Script';
 import DescriptionPartial from '../partials/DescriptionPartial';
 import { IMPORT_SPECIFIER_TO_MODEL } from "../constants";
 
-export namespace DocumentationSpace {
+export declare namespace DocumentationSpace {
   export type Config = {
     package: Package;
     component: Component;

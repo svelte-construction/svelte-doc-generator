@@ -13,7 +13,7 @@ import DefaultImport from "./DefaultImport";
 import NamespaceImport from "./NamespaceImport";
 import Script from "../models/Script";
 
-export namespace BaseImportSpace {
+export declare namespace BaseImportSpace {
   export type Config = {
     script: Script;
     specifier: BaseModuleSpecifier;

@@ -11,7 +11,7 @@ import {
 import Description from '../models/Description';
 import Location, { LocationSpace } from '../models/Location';
 
-export namespace VariableExportSpace {
+export declare namespace VariableExportSpace {
   export type Config = {};
 
   export type Result = {

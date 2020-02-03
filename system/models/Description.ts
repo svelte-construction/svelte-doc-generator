@@ -9,7 +9,7 @@ import { BaseExportSpace } from '../exports/BaseExport';
 import { ExportResultType } from '../types/ExportResultType';
 import resolveMarkdownFromComment from '../helpers/resolveMarkdownFromComment';
 
-export namespace DescriptionSpace {
+export declare namespace DescriptionSpace {
   export type Config = {
     comments: Data[];
   }

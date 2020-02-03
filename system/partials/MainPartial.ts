@@ -7,7 +7,7 @@ import {
   DOCUMENTATION_VARIABLE_RAW
 } from '../constants';
 
-export namespace MainPartialSpace {
+export declare namespace MainPartialSpace {
   export type Config = {}
 }
 

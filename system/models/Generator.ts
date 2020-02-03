@@ -1,15 +1,6 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import merge from 'deepmerge';
-import Component from './Component';
-import SvelteSource from '../base/SvelteSource';
-import { Ast, Script, TemplateNode } from 'svelte/types/compiler/interfaces';
 import Package from './Package';
-import { ImportDeclaration, ImportSpecifier } from 'estree';
-import Import from '../imports/Import';
-import NamespaceImport from '../imports/NamespaceImport';
-import DefaultImport from '../imports/DefaultImport';
-import UsagePartial from '../partials/UsagePartial';
 import Documentation from './Documentation';
 import Base from '../base/Base';
 import resolveRelativeImports from '../helpers/resolveRelativeImports';
@@ -21,7 +12,7 @@ import {
 } from "../constants";
 import encodeSpecialChars from "../helpers/encodeSpecialChars";
 
-export namespace GeneratorSpace {
+export declare namespace GeneratorSpace {
   export type Config = {
     name: string;
     package: Package;

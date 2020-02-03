@@ -3,7 +3,7 @@ import SvelteSource from '../base/SvelteSource';
 import { SourceSpace } from '../base/Source';
 import { Script as SvelteScript } from 'svelte/types/compiler/interfaces';
 
-export namespace ComponentSpace {
+export declare namespace ComponentSpace {
   export type Config = {
     path: string;
   }

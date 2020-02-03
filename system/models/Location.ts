@@ -9,7 +9,7 @@ import { BaseExportSpace } from '../exports/BaseExport';
 import { ExportResultType } from '../types/ExportResultType';
 import { ScriptSpace } from './Script';
 
-export namespace LocationSpace {
+export declare namespace LocationSpace {
   export type Config = {
     data: SourceLocation;
   }

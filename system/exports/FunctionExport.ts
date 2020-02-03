@@ -13,7 +13,7 @@ import BaseExport, { BaseExportSpace } from './BaseExport';
 import Description from '../models/Description';
 import { LocationSpace } from '../models/Location';
 
-export namespace FunctionExportSpace {
+export declare namespace FunctionExportSpace {
   export type Config = {};
 
   export type Result = {

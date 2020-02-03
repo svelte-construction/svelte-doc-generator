@@ -1,17 +1,17 @@
 {
   "type": "module",
   "name": "svelte-doc-generator",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "",
   "scripts": {
-    "check": "./node_modules/.bin/tsc --noEmit",
-    "check:watch": "npm run check -- --watch",
-    "system:watch": "./node_modules/.bin/tsc -w",
-    "system:build": "npm run build:types && npm run build:js",
-    "system:build:types": "./node_modules/.bin/tsc --emitDeclarationOnly",
-    "system:build:js": "babel system --out-dir dist/system --extensions ',.ts,.tsx' --source-maps inline",
+    "build": "./node_modules/.bin/tsc",
+    "watch": "./node_modules/.bin/tsc -w",
+    "lint": "./node_modules/.bin/tsc --noEmit",
     "compile-bootstrap": "./node_modules/.bin/gulp compile-bootstrap"
   },
+  "pre-commit": [
+    "lint"
+  ],
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com:svelte-construction/svelte-doc-generator.git"
@@ -26,11 +26,6 @@
   "author": "Pavel Kondratenko <iam@kondratenko.me>",
   "license": "ISC",
   "devDependencies": {
-    "@babel/cli": "^7.8.3",
-    "@babel/core": "^7.8.3",
-    "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@babel/preset-env": "^7.8.3",
-    "@babel/preset-typescript": "^7.8.3",
     "@types/commander": "^2.12.2",
     "@types/dom-parser": "^0.1.0",
     "@types/estree": "0.0.42",
@@ -39,13 +34,6 @@
     "@types/md5": "^2.1.33",
     "@types/node": "^13.5.0",
     "@types/yargs": "^15.0.1",
-    "autoprefixer": "^9.7.4",
-    "babel-runtime": "^6.26.0",
-    "cssnano": "^4.1.10",
-    "estree-walker": "^1.0.1",
-    "file-loader": "^5.0.2",
-    "fs": "0.0.1-security",
-    "fs-extra": "^8.1.0",
     "gulp": "^4.0.2",
     "gulp-insert": "^0.5.0",
     "gulp-postcss": "^8.0.0",
@@ -53,6 +41,27 @@
     "gulp-sass": "^4.0.2",
     "magic-string": "^0.25.6",
     "periscopic": "^2.0.2",
+    "pre-commit": "^1.2.2",
+    "typescript": "^3.7.5"
+  },
+  "dependencies": {
+    "autoprefixer": "^9.7.4",
+    "bootstrap": "^4.4.1",
+    "child_process": "^1.0.2",
+    "colors": "^1.4.0",
+    "commander": "^4.1.0",
+    "comment-parser": "^0.7.2",
+    "cssnano": "^4.1.10",
+    "dom-parser": "^0.1.6",
+    "estree-walker": "^1.0.1",
+    "fs": "0.0.1-security",
+    "fs-extra": "^8.1.0",
+    "glob-watcher": "^5.0.3",
+    "highlight.js": "^9.18.0",
+    "markdown-it": "^10.0.0",
+    "moment": "^2.24.0",
+    "os": "^0.1.1",
+    "path": "^0.12.7",
     "postcss": "^7.0.18",
     "postcss-automath": "^1.0.1",
     "postcss-color-mod-function": "^3.0.3",
@@ -67,22 +76,7 @@
     "postcss-preset-env": "^6.6.0",
     "postcss-selector-namespace": "^3.0.1",
     "postcss-simple-vars": "^5.0.2",
-    "typescript": "^3.7.5"
-  },
-  "dependencies": {
-    "bootstrap": "^4.4.1",
-    "colors": "^1.4.0",
-    "commander": "^4.1.0",
-    "comment-parser": "^0.7.2",
-    "deepmerge": "^4.2.2",
-    "dom-parser": "^0.1.6",
-    "glob-watcher": "^5.0.3",
-    "highlight.js": "^9.18.0",
-    "markdown-it": "^10.0.0",
-    "moment": "^2.24.0",
-    "svelte": "^3.17.3",
-    "svelte-loader": "^2.13.6",
-    "svelte-preprocess": "^3.3.0",
-    "svelte-routing": "^1.4.0"
+    "svelte": "^3.18.1",
+    "util": "^0.12.1"
   }
 }

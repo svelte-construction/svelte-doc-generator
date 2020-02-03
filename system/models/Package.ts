@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import Source from '../base/Source';
 
-export namespace PackageSpace {
+export declare namespace PackageSpace {
   export type Config = {
     path: string;
   };

@@ -3,7 +3,7 @@ import { Ast } from 'svelte/types/compiler/interfaces';
 import Source from './Source';
 import Script from "../models/Script";
 
-export namespace SvelteComponentSpace {
+export declare namespace SvelteComponentSpace {
   export type Config = {}
 }
 
