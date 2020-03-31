@@ -8,7 +8,7 @@ You can generate a documentation for whole your library.
 **1. Install the package**
 
 ```bash
-npm install --save-dev svelte-doc--generator
+npm install --save-dev svelte-doc-generator
 ```
 
 **2. Run setup tool**
