@@ -1,3 +1,8 @@
+# ⚠️ The project has been moved [here](https://github.com/gustarus/svelte-doc-generator).
+
+---------------
+
+
 # Svelte documentation generator tool
 Do you have a library of svelte components?
 You can generate a documentation for whole your library.
